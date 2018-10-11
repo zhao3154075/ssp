@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+<body>
+<input type="hidden" th:value="${loginUser.userId}" name="userId">
+<div class="form-group">
+    <label class="col-sm-1 control-label">
+        角色
+    </label>
+
+    <div class="col-sm-4">
+        <select class="form-control" name="roleType">
+            <option>请选择角色</option>
+            <option value="2" th:selected="${loginUser.roleType eq 2}">系统管理员</option>
+            <option value="3" th:selected="${loginUser.roleType eq 3}">一级管理员</option>
+            <option value="4" th:selected="${loginUser.roleType eq 4}">二级管理员</option>
+        </select>
+    </div>
+</div>
+    <div class="form-group">
+        <label class="col-sm-1 control-label">
+            姓名
+        </label>
+
+        <div class="col-sm-4">
+            <input type="text" name="realName" maxlength="4" required
+                   class="form-control" th:value="${loginUser.realName}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-1 control-label">
+            联系方式
+        </label>
+
+        <div class="col-sm-4">
+            <input type="text" name="mobile" maxlength="20" required
+                   class="form-control" th:value="${loginUser.mobile}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-1 control-label">
+            用户名
+        </label>
+
+        <div class="col-sm-4">
+            <input type="text" name="userName" maxlength="30" required
+                   class="form-control" th:value="${loginUser.userName}">
+        </div>
+    </div>
+<div class="form-group" th:if="${loginUser.userName} == null">
+    <label class="col-sm-1 control-label">
+       密码
+    </label>
+
+    <div class="col-sm-4">
+        <input type="text" name="psw" maxlength="30" required
+               class="form-control" >
+    </div>
+</div>
+    <div class="form-group" >
+        <label class="col-sm-1 control-label">
+        </label>
+
+        <div class="col-sm-10">
+            <button type="submit"
+                    class="ladda-button btn btn-primary" data-style="zoom-out">提交</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

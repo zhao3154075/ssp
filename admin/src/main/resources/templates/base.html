@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <base th:href="|//${#request.getServerName()}${#request.getContextPath()}/|">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="|${urlPrefix}/bootstrap/css/bootstrap.min.css|" rel="stylesheet">
+    <link th:href="|${urlPrefix}/bootstrap/font-awesome/css/font-awesome.css|" rel="stylesheet">
+
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/iCheck/custom.css|" rel="stylesheet">
+
+    <!-- Toastr style -->
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/toastr/toastr.min.css|" rel="stylesheet">
+
+    <!-- Ladda style -->
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/ladda/ladda-themeless.min.css|" rel="stylesheet">
+
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/datapicker/datepicker3.css|" rel="stylesheet">
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/daterangepicker/daterangepicker-bs3.css|" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link th:href="|${urlPrefix}/bootstrap/js/plugins/gritter/jquery.gritter.css|" rel="stylesheet">
+
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/dataTables/datatables.min.css|" rel="stylesheet">
+    <link th:href="|${urlPrefix}/bootstrap/css/animate.css|" rel="stylesheet">
+    <link th:href="|${urlPrefix}/bootstrap/css/style.css|" rel="stylesheet">
+    <!-- blueimp-gallery -->
+    <link th:href="|${urlPrefix}/bootstrap/css/plugins/blueimp/css/blueimp-gallery.min.css|" rel="stylesheet">
+
+
+    <!-- Mainly scripts -->
+    <script th:src="|${urlPrefix}/bootstrap/js/jquery-2.1.1.js|"></script>
+    <script th:src="|${urlPrefix}/bootstrap/js/bootstrap.min.js|"></script>
+    <script th:src="|${urlPrefix}/scripts/rest.js|"></script>
+</head>
+<body>
+<th:block layout:fragment="content"></th:block>
+<!-- Bottom Scripts -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/metisMenu/jquery.metisMenu.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/slimscroll/jquery.slimscroll.min.js|"></script>
+
+<!-- Flot -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/flot/jquery.flot.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/flot/jquery.flot.tooltip.min.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/flot/jquery.flot.spline.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/flot/jquery.flot.resize.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/flot/jquery.flot.pie.js|"></script>
+
+<!-- Custom and plugin javascript -->
+<script th:src="|${urlPrefix}/bootstrap/js/inspinia.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/pace/pace.min.js|"></script>
+
+<!-- jQuery UI -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/jquery-ui/jquery-ui.min.js|"></script>
+
+<!-- Ladda -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/ladda/spin.min.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/ladda/ladda.min.js|"></script>
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/ladda/ladda.jquery.min.js|"></script>
+
+<!-- GITTER -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/gritter/jquery.gritter.min.js|"></script>
+
+<!-- Sparkline -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/sparkline/jquery.sparkline.min.js|"></script>
+
+<!-- Sparkline demo data  -->
+<script th:src="|${urlPrefix}/bootstrap/js/demo/sparkline-demo.js|"></script>
+
+<!-- Toastr -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/toastr/toastr.min.js|"></script>
+
+<!-- iCheck -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/iCheck/icheck.min.js|"></script>
+<!-- Jquery Validate -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/validate/jquery.validate.min.js|"></script>
+
+<!-- Data picker -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/datapicker/bootstrap-datepicker.js|"></script>
+<!-- Date range use moment.js same as full calendar plugin -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/fullcalendar/moment.min.js|"></script>
+<!-- Date range picker -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/daterangepicker/daterangepicker.js|"></script>
+
+<!-- blueimp gallery -->
+<script th:src="|${urlPrefix}/bootstrap/js/plugins/blueimp/jquery.blueimp-gallery.min.js|"></script>
+
+<script th:src="|${urlPrefix}/scripts/common.js|"></script>
+<script th:src="|${urlPrefix}/scripts/common-function.js|"></script>
+<script th:inline="javascript">
+    var src_perfix="[(${urlPrefix})]/";
+</script>
+</body>
+</html>

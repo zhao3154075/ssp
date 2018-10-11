@@ -1,0 +1,207 @@
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    $(function(){
+        pushHistory();
+        var bool=false;
+        setTimeout(function(){
+            bool=true;
+        },150);
+        window.addEventListener("popstate", function(e) {
+            if(bool){
+                if(backUrl=="close"){
+                    closeWindow();
+                }else{
+                    location.href=backUrl;
+                }
+            }
+        }, false);
+    });
+</script>
+<script>
+    var urlPrefix="[(${urlPrefix})]";
+    //微信分享的数据
+    var wxData = {
+        "imgUrl" : urlPrefix+"/images/share_icon.png",
+        "link" : "http://www.xhcminform.top/mobile/index",
+        "desc" : "快和我一起参与文明创建，赢取奖励",
+        "title" : "快和我一起参与文明创建，赢取奖励"
+    };
+    //分享的回调
+    var wxCallbacks = {
+        // 分享被用户自动取消
+        cancel : function() {
+            // 你可以在你的页面上给用户一个小Tip，为什么要取消呢？
+        },
+        // 分享成功
+        success : function() {
+
+        }
+    };
+</script>
+<script type="text/javascript">
+    var located=-1,inarea=false;
+    function checkLocation(){
+        if(typeof(locs) != "undefined"){
+            if(located!=1||!inarea){
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            if(located==0){
+                alert("正在进行地理位置定位，请稍后再试");
+                return false;
+            }
+            if(located==-1){
+                alert("请您打开地址理置定位，否则无法参与活动");
+                return false;
+            }
+            if(!inarea){
+                alert("很抱歉！根据定位，您的地理位置不在活动有效范围，请关注活动详情了解活动参与规则");
+                return false;
+            }
+        }
+        return true;
+    }
+    $(function(){
+        $.getJSON("jsconfig",{url:window.location.href},function(msg){
+            wx.config({
+                debug: msg.debug,
+                appId: msg.appId,
+                timestamp: msg.timestamp,
+                nonceStr: msg.nonceStr,
+                signature: msg.signature,
+                jsApiList: msg.jsApiList
+            });
+            wx.ready(function() {
+                wx.showAllNonBaseMenuItem();
+                if(typeof wxReadyCallBack!= "undefined"){wxReadyCallBack();}
+                reloadShareParams();
+                if(typeof(locs) != "undefined"){
+                    located=0;
+                    wx.getLocation({
+                        type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                        success: function (res) {
+                            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                            var speed = res.speed; // 速度，以米/每秒计
+                            var accuracy = res.accuracy; // 位置精度
+                            geocoder = new qq.maps.Geocoder({
+                                complete:function(result){
+                                    located=1;
+                                    if(result.detail.address.indexOf(locs)>-1){
+                                        inarea=true;
+                                    }
+                                }
+                            });
+                            var coord=new qq.maps.LatLng(latitude,longitude);
+                            geocoder.getAddress(coord);
+                        }
+                    });
+                }
+            });
+            $(".wx_image_preview_area").delegate(".wx_image_preview","click",function(){
+                var srcList = [];
+                $(".wx_image_preview").each(function(){
+                    srcList.push(this.src);
+                });
+                imagePreview(this.src,srcList);
+            });
+        });
+    });
+    function reloadShareParams(){
+        wx.onMenuShareTimeline({
+            title: wxData.ftitle==null?wxData.title:wxData.ftitle,
+            link: wxData.link,
+            imgUrl: wxData.imgUrl,
+            success: function() {
+                wxCallbacks.success()
+            },
+            cancel: function() {
+                wxCallbacks.cancel()
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: wxData.title,
+            desc: wxData.desc,
+            link: wxData.link,
+            imgUrl: wxData.imgUrl,
+            type: "",
+            dataUrl: "",
+            success: function() {
+                wxCallbacks.success()
+            },
+            cancel: function() {
+                wxCallbacks.cancel()
+            }
+        });
+        wx.onMenuShareQQ({
+            title: wxData.title,
+            desc: wxData.desc,
+            link: wxData.link,
+            imgUrl: wxData.imgUrl,
+            success: function() {
+                wxCallbacks.success()
+            },
+            cancel: function() {
+                wxCallbacks.cancel()
+            }
+        });
+        wx.onMenuShareWeibo({
+            title: wxData.title,
+            desc: wxData.desc,
+            link: wxData.link,
+            imgUrl: wxData.imgUrl,
+            success: function() {
+                wxCallbacks.success()
+            },
+            cancel: function() {
+                wxCallbacks.cancel()
+            }
+        });
+    }
+    function imagePreview(curSrc, srcList) {
+        if (!curSrc || !srcList || srcList.length == 0) {
+            return
+        }
+        WeixinJSBridge.invoke("imagePreview", {
+            "current": curSrc,
+            "urls": srcList
+        })
+    }
+    function closeWindow() {
+        WeixinJSBridge.call("closeWindow")
+    }
+
+
+    function guanzhu() {
+        var html = $("<div id='scover' style='position: fixed;	top:0;	left:0;	width:100%;	height:100%;background:rgba(0, 0, 0, 0.7);	display:none;z-index:20000;display: block;'><img style='display:block;margin:30px auto;z-index:20001;width:70%;height:auto;' src='" + urlPrefix + "/images/qrcode.jpg'><div style='padding:30px 20px 20px 20px;font-size:18px;color:#fff;z-index:20001;'>请长按二维码，点击“识别二维码”按钮，关注我们</div></div>");
+        $("body").append(html);
+        $("#scover").click(function() {
+            $(this).remove()
+        })
+    }
+    //进行经纬度转换为距离的计算
+
+    function Rad(d){
+        return d * Math.PI / 180.0;//经纬度转换成三角函数中度分表形式。
+    }
+    //计算距离，参数分别为第一点的纬度，经度；第二点的纬度，经度
+    function GetDistance(lat1,lng1,lat2,lng2){
+
+        var radLat1 = Rad(lat1);
+        var radLat2 = Rad(lat2);
+        var a = radLat1 - radLat2;
+        var  b = Rad(lng1) - Rad(lng2);
+        var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+            Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+        s = s *6378.137 ;// EARTH_RADIUS;
+        s = Math.round(s * 10) / 10; //输出为公里
+        return s*1000;
+    }
+    function pushHistory() {
+        var state = {
+            title: "myCenter",
+            url: "__SELF__"
+        };
+        window.history.pushState(state, state.title, state.url);
+    }
+</script>

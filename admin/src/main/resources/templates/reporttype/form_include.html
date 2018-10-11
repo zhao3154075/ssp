@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<input type="hidden" th:value="${reportType.typeId}" name="typeId">
+<div class="form-group">
+    <label class="col-sm-1 control-label">
+        类型
+    </label>
+
+    <div class="col-sm-4">
+        <div class="i-checks"><label> <input type="radio" value="0" name="receiveType" th:checked="${reportType.parentId == null}"> <i></i> 一级分类 </label></div>
+        <div class="i-checks"><label> <input type="radio" value="1" name="receiveType" th:checked="${reportType.parentId != null}"> <i></i> 二级分类 </label></div>
+    </div>
+</div>
+<div class="form-group" id="parentId">
+    <label class="col-sm-1 control-label">
+        上级分类
+    </label>
+
+    <div class="col-sm-4">
+        <select name="parentId" class="form-control">
+            <option value="">选择分类</option>
+            <option th:each="item:${parents}" th:value="${item.typeId}" th:selected="${item.typeId eq reportType.parentId}">
+                [[${item.typeName}]]
+            </option>
+        </select>
+    </div>
+</div>
+    <div class="form-group">
+        <label class="col-sm-1 control-label">
+            分类名称
+        </label>
+
+        <div class="col-sm-4">
+            <input type="text" name="typeName" maxlength="100" required
+                   class="form-control" th:value="${reportType.typeName}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-1 control-label">
+            分类描述
+        </label>
+
+        <div class="col-sm-4">
+            <textarea class="form-control" name="typeDesc" rows="3" maxlength="1000" th:text="${reportType.typeDesc}" required></textarea>
+        </div>
+    </div>
+    <div class="form-group" id="amount">
+        <label class="col-sm-1 control-label">
+            奖励金额
+        </label>
+        <div class="col-sm-4">
+            <div class="input-group m-b"><input type="number" name="amount" min="1" max="200" required
+                                                class="form-control" th:value="${reportType.amount==null?'0':reportType.amount/100}"><span class="input-group-addon">元</span></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-1 control-label">
+        </label>
+
+        <div class="col-sm-10">
+            <button type="submit"
+                    class="ladda-button btn btn-primary" data-style="zoom-out">提交</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        setInterval(function(){
+            if($("input[type=radio]:checked").val()==0){
+                $("#parentId").hide();
+                $("#amount").hide();
+                $("[name=parentId]").val("");
+                $("[name=amount]").val("0");
+            }else{
+                $("#parentId").show();
+                $("#amount").show();
+            }
+        },100);
+    })
+</script>
+</body>
+</html>

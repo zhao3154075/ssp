@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base}">
+
+<head>
+<script>if(window.top!=window.self){window.parent.location.href="loginuser/login";}</script>
+</head>
+
+<body class="gray-bg">
+<th:block layout:fragment="content">
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name"></h1>
+            </div>
+            <form class="m-t" role="form" action="loginuser/toLogin" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="用户名" name="userName" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="密码" name="psd" required="" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <!--<div class="loginYzm">验证码:</div>-->
+                    <input type="text" id="kaptcha" name="kaptcha" class="form-control" placeholder="验证码"/>
+                    <br>
+                    <img id="cap_img" src="getKaptcha" alt="" class="loginImg"/>
+                    <span id="kaptcha_span" style="cursor: pointer;">看不清楚，换一张</span>
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">登陆</button>
+            </form>
+        </div>
+    </div>
+    <!-- Mainly scripts -->
+    <script th:src="|${urlPrefix}/bootstrap/js/jquery-2.1.1.js|"></script>
+    <script th:src="|${urlPrefix}/bootstrap/js/bootstrap.min.js|"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#cap_img,#kaptcha_span").click(function () {
+                $("#cap_img").attr('src','getKaptcha');
+            });
+            $("#cap_img").click(function () {
+                $("#cap_img").attr('src','getKaptcha');
+            });
+        });
+    </script>
+    <script  th:inline="javascript">
+        $(function(){
+            /*<![CDATA[*/
+            var message = [[${message}]];
+            /*]]>*/
+            if(!(message == '' || message == null)){
+                alert(message);
+                return false;
+            }
+        });
+    </script>
+</th:block>
+</body>
+
+</html>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="ReportType">
+
+	<resultMap id="RM_ReportType" type="com.es.ssp.model.ReportType">
+        <result property="typeId" column="typeId"/>
+        <result property="typeName" column="typeName"/>
+        <result property="typeDesc" column="typeDesc"/>
+        <result property="amount" column="amount"/>
+        <result property="createTime" column="createTime"/>
+		<result property="parentId" column="parentId"/>
+		<association property="parentType" column="parentId" fetchType="lazy"
+					 select="ReportType.getById" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="ReportType.columns">
+	    <![CDATA[
+		typeId,typeName,typeDesc,amount,createTime,parentId
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="ReportType.insert" useGeneratedKeys="true" keyProperty="typeId">
+    <![CDATA[
+        INSERT INTO report_type (
+         typeId, typeName, typeDesc, amount, createTime,parentId
+        ) VALUES (
+         #{typeId}, #{typeName}, #{typeDesc}, #{amount}, #{createTime},#{parentId}
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="ReportType.update" >
+    <![CDATA[
+        UPDATE report_type SET
+	        typeName = #{typeName} , typeDesc = #{typeDesc} , amount = #{amount} , createTime = #{createTime},parentId=#{parentId}
+        WHERE 
+        	typeId = #{typeId}  	        
+    ]]>
+	</update>
+
+    <delete id="ReportType.delete">
+    <![CDATA[
+        DELETE FROM report_type WHERE
+        typeId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="ReportType.getById" resultMap="RM_ReportType">
+		SELECT <include refid="ReportType.columns" />
+	    <![CDATA[
+		    FROM report_type 
+	        WHERE 
+		        typeId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="ReportType.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(typeId)">
+				AND typeId = #{typeId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(typeName)">
+				AND typeName = #{typeName}
+			</if>
+	       <if test="@Ognl@isNotEmpty(typeDesc)">
+				AND typeDesc = #{typeDesc}
+			</if>
+	       <if test="@Ognl@isNotEmpty(amount)">
+				AND amount = #{amount}
+			</if>
+	       <if test="@Ognl@isNotEmpty(createTime)">
+				AND createTime = #{createTime}
+			</if>
+			<if test="@Ognl@isEmpty(children)">
+				<if test="@Ognl@isNotEmpty(parentId)">
+					AND parentId = #{parentId}
+				</if>
+				<if test="@Ognl@isEmpty(parentId)">
+					AND parentId is NULL
+				</if>
+			</if>
+			<if test="@Ognl@isNotEmpty(children)">
+				AND parentId is not NULL
+			</if>
+		</where>
+	</sql>
+		
+    <select id="ReportType.findPage.count" resultType="long">
+        SELECT count(*) FROM report_type 
+		<include refid="ReportType.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="ReportType.findPage" resultMap="RM_ReportType">
+    	SELECT <include refid="ReportType.columns" />
+	    FROM report_type 
+		<include refid="ReportType.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="ReportType.findAll" resultMap="RM_ReportType">
+	    SELECT <include refid="ReportType.columns" />
+		FROM report_type
+		<include refid="ReportType.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+
+	<select id="ReportType.findParents" resultMap="RM_ReportType">
+		SELECT <include refid="ReportType.columns" />
+		FROM report_type
+		WHERE parentId is NULL
+	</select>
+</mapper>
+

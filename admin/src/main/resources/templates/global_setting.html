@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base_form}">
+<head>
+</head>
+<body>
+<th:block layout:fragment="form_title">
+    <li>
+        <a>奖励发放</a>
+    </li>
+    <li class="active">
+        <strong>初始奖励发放设置</strong>
+    </li>
+</th:block>
+<th:block layout:fragment="form_content">
+    <form th:method="put" th:action="globalsetting" class="form-horizontal form-wizard form validate">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                每日奖励发放上限
+            </label>
+
+            <div class="col-sm-2">
+                <div class="input-group m-b"><input type="number" name="dayLimit" min="1" required
+                                                    class="form-control" th:value="${globalSetting.dayLimit}"><span class="input-group-addon">次</span></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                初始红包金额
+            </label>
+
+            <div class="col-sm-2">
+                <div class="input-group m-b"><input type="number" name="firstAmount" min="1" max="200" required
+                                                    class="form-control" th:value="${globalSetting.firstAmount/100}"><span class="input-group-addon">元</span></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                初始奖励领取方式
+            </label>
+
+            <div class="col-sm-4">
+                <div class="i-checks"><label> <input type="radio" value="0" name="receiveType" th:checked="${globalSetting.receiveType eq 0}"> <i></i> 用户成功提交要素齐全的举报信息后可立即领取 </label></div>
+                <div class="i-checks"><label> <input type="radio" value="1" name="receiveType" th:checked="${globalSetting.receiveType eq 1}"> <i></i> 初审通过，由初审人员进行发放 </label></div>
+                <div class="i-checks"><label> <input type="radio" value="2" name="receiveType" th:checked="${globalSetting.receiveType eq 2}"> <i></i> 复审通过/admin通过后发放 </label></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-1 control-label">
+            </label>
+
+            <div class="col-sm-10">
+                <button type="submit"
+                        class="ladda-button btn btn-primary" data-style="zoom-out">提交</button>
+            </div>
+        </div>
+    </form>
+</th:block>
+</body>
+</html>

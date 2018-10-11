@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="|${urlPrefix}/scripts/video.min.js|"></script>
+    <link th:href="|${urlPrefix}/styles/video-js.min.css|" rel="stylesheet">
+    <style>
+        body {
+            background-color: #191919
+        }
+    </style>
+</head>
+<body>
+    <video id="my-video" class="video-js" controls preload="auto" width="780" height="480"
+            data-setup="{}">
+        <source th:src="${src}" type="video/mp4">
+        <source th:src="${src}" type="video/webm">
+        <source th:src="${src}" type="video/ogg">
+    </video>
+    <script src="http://vjs.zencdn.net/5.19/lang/zh-CN.js"></script>
+    <script type="text/javascript">
+        var myPlayer = videojs('my-video');
+        videojs("my-video").ready(function(){
+            var myPlayer = this;
+            myPlayer.play();
+        });
+
+    </script>
+</body>
+</html>

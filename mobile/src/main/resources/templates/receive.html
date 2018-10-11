@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <link type="text/css" rel="stylesheet" th:href="|${urlPrefix }/styles/mobile.css|" />
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="main">
+        <div class="banner_bg">
+            <p class="p_title"></p>
+            <div class="money down">
+                <div class="mbox hide">
+                    <p class="t12">恭喜获得</p>
+                    <p class="price_n"><span class="coin">￥</span><span>[[${amount/100}]]</span></p>
+                </div>
+            </div>
+            <div class="hb_t">
+            </div>
+        </div>
+
+        <div class="btn_box">
+            <div class="btn_share btn_bg mt10"><a href="javascript:;">邀请好友一起参与</a></div>
+            <p class="text_p">别忘记在美丽西湖公众号中领取后红包才能计入微信零钱奥！</p>
+            <p class="text_link"><a th:href="|reportList?openId=${fans?.openId}|">个人中心>></a></p>
+
+        </div>
+    </div>
+    <div class="bg hide">
+        <div class="share_note">点击右上角，<span class="red_t">邀请好友一起参与</span><span class="jt"></span></div>
+    </div>
+    <script>
+        //字体大小的初始化
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if(clientWidth > 640){    //针对移动版的页面控制在640px内
+                        docEl.style.fontSize = '40px';
+                    }
+                    if(clientWidth <640){
+                        docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+                    }
+
+
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+        //
+        $(function(){
+            $(".money").removeClass("down").addClass("up slideInUp");
+            $(".mbox").show();
+            $(".btn_share").click(function(){
+                $(".bg").show();
+
+            });
+            $(".bg").click(function(){
+                $(this).hide();
+            });
+        });
+        var backUrl='reportList?openId=[[${fans?.openId}]]';
+    </script>
+    <th:block th:replace="~{share_js}"></th:block>
+</th:block>
+</body>
+</html>

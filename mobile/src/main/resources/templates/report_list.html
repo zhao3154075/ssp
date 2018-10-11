@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container" id="container">
+        <div class="page js_show">
+            <div class="page__hd">
+                <h1 class="page__title">本年度贡献值：[[${thisYearAmount==null?'0':thisYearAmount/100}]]分</h1>
+                <p class="page__desc">总贡献值：[[${totalAmount==null?'0':totalAmount/100}]]分</p>
+            </div>
+            <div class="page__bd">
+                <th:block th:each="item:${list}">
+                <div class="weui-form-preview">
+                    <div class="weui-form-preview__hd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">[[${#dates.format(item.createTime*1000,'yyyy-MM-dd HH:mm')}]]</label>
+                            <em class="weui-form-preview__value" th:text="${item.statusString}">状态</em>
+                        </div>
+                    </div>
+                    <div class="weui-form-preview__bd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">发生时间</label>
+                            <span class="weui-form-preview__value">[[${#dates.format(item.happenTime*1000,'yyyy年MM月dd日 HH时mm分')}]]</span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">发生地点</label>
+                            <span class="weui-form-preview__value" th:text="${item.happenPlace}">发生地点内容</span>
+                        </div>
+                        <div class="weui-form-preview__item" th:if="${not #strings.isEmpty(item.reply)}">
+                            <label class="weui-form-preview__label">小编回复</label>
+                            <span class="weui-form-preview__value" th:text="${item.reply}">小编回复内容</span>
+                        </div>
+                    </div>
+                    <div class="weui-form-preview__ft">
+                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" th:if="${item.prizeStatus1 eq 1}" th:href="|receive/${item.reportId}/0?openId=${fans?.openId}|">领取初次奖励</a>
+                        <a class="weui-form-preview__btn weui-form-preview__btn_primary" th:if="${item.prizeStatus2 eq 1}" th:href="|receive/${item.reportId}/1?openId=${fans?.openId}|">领取追加奖励</a>
+                    </div>
+                </div>
+                    <br/>
+                </th:block>
+            </div>
+            <div class="page__bd page__bd_spacing">
+                <a th:href="|index?openId=${fans?.openId}|" class="weui-btn weui-btn_plain-primary">返回首页</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        var backUrl='index?openId=[[${fans?.openId}]]';
+    </script>
+    <th:block th:replace="~{share_js}"></th:block>
+</th:block>
+</body>
+</html>

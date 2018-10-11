@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <style>
+        .index_box{
+            width: 100%;
+            height: 100%;
+            letter-spacing: 0.3rem;
+        }
+        .indexbg1{width: 100%;height: 100%;background-image:url([[${urlPrefix}]]/images/bg.jpg);background-size: 100% 100%;background-repeat: no-repeat;}
+        .click_btn{margin: 0 auto;
+            border: #29407a 3px solid;
+            color: #29407a;
+            width: 10rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 11px;
+            top: 78%;
+            padding-left: 0.3rem;
+            position: relative;}
+        .index_box a{color: #29407a;
+            margin: 0 auto;
+            width: 6rem;
+            display: block;
+            position: relative;
+            top: 80%;
+            font-weight: 600;
+            font-size: 1rem;
+            padding-left: 0.3rem;
+            line-height: 2;}
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="index_box">
+        <div class="indexbg1">
+
+            <div class="click_btn" id="join_btn">我要参与</div>
+            <a href="javascript:void(0);" th:href="|reportList?openId=${fans?.openId}|">个人中心</a>
+            <a href="javascript:void(0);" >使用说明</a>
+
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        var backUrl='close';
+        var locs="西湖";
+        $(function(){
+            $("#join_btn").on("click",function(){
+                /*[# th:if="${fans eq null}"]*/
+                guanzhu();
+                return false;
+                /*[/]*/
+                if(located!=1){
+                    weui.alert("无法获取当前定位信息");
+                    return false;
+                }
+                if(!inarea){
+                    weui.alert("对不起，不在西湖区范围无法参加");
+                    return false;
+                }
+                /*[# th:if="${fans != null}"]*/
+                location.href="report?openId=[(${fans.openId})]";
+                /*[/]*/
+            })
+        })
+    </script>
+    <th:block th:replace="~{share_js}"></th:block>
+</th:block>
+</body>
+</html>

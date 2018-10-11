@@ -1,0 +1,13 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /admin
+spring:
+  thymeleaf:
+    cache: false
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+logging:
+  config: classpath:logback.xml

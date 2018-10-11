@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      layout:decorate="~{base}">
+<head>
+    <link th:href="|${urlPrefix}/styles/css/index.css|" rel="stylesheet"/>
+    <script type="text/javascript" th:src="|${urlPrefix}/scripts/simpletable/simpletable.js|"></script>
+    <script type="text/javascript"th:src="|${urlPrefix}/scripts/index.js|"></script>
+    <script type="text/javascript"th:src="|${urlPrefix}/scripts/jquery.rotate.min.js|"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function () {
+            // 分页需要依赖的初始化动作
+            window.simpleTable = new SimpleTable('queryForm', [[${page.thisPageNumber}]], [[${page.pageSize}]], [[${query.sortColumns}]], "pageNumber");
+        });
+    </script>
+    <style>
+        .wrap-th{
+            word-break: break-all;word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div id="wrapper" class="gray-bg" style="padding:0 15px;">
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2></h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a>信息显示与管理</a>
+                    </li>
+                    <li class="active">
+                        <strong>[[${type}]]列表</strong>
+                    </li>
+                </ol>
+                </h3>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools">
+                                <a href="javascript:document.location.reload();">
+                                    <i class="fa fa-rotate-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                <form action="" name="queryForm" id="queryForm">
+                                    <input type="hidden" name="status" th:value="${query.status}"/>
+                                    <input type="hidden" name="roleType" th:value="${query.roleType}"/>
+                                <div class="row">
+                                    <div class="col-sm-2 m-b-xs">
+                                        <input type="text" name="openId" th:value="${query.openId}" placeholder="请填写openid" class="input-sm form-control">
+                                    </div>
+                                    <div class="col-sm-2 m-b-xs">
+                                        <input type="text" name="nickName" th:value="${query.nickName}" placeholder="请填写昵称" class="input-sm form-control">
+                                    </div>
+                                    <div class="col-sm-2 m-b-xs">
+                                        <input type="text" name="realName" th:value="${query.realName}"  placeholder="请填写姓名" class="input-sm form-control">
+                                    </div>
+                                    <div class="col-sm-2 m-b-xs">
+                                        <input type="text" name="mobile" th:value="${query.mobile}"  placeholder="请填写联系方式" class="input-sm form-control">
+                                    </div>
+                                    <div class="col-sm-2 m-b-xs">
+                                        <input type="text" name="happenPlace" th:value="${query.happenPlace}" placeholder="请填写发生地点" class="input-sm form-control">
+                                    </div>
+                                    <div class="col-sm-2 m-b-xs" th:if="${session.user?.roleType!=0}">
+                                        <select name="reportType1" class="form-control">
+                                            <option value="">信息分类</option>
+                                            <option th:each="obj:${reportTypeList}" th:value="${obj.typeId}" th:selected="${obj.typeId==query.reportType1}" th:text="${obj.typeName}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 m-b-xs">
+                                        <div class="time_picker">
+                                            <input type="checkbox" class="cbr" name="byTime" th:checked="${query.byTime}">
+                                            <input name="startTimeStr" class="start" type="hidden"
+                                                   th:value="${query.startTime}?${#dates.format(query.startTime*1000,'yyyy-MM-dd HH:mm')}" />
+                                            <input name="endTimeStr" class="end" type="hidden"
+                                                   th:value="${query.endTime}?${#dates.format(query.endTime*1000,'yyyy-MM-dd HH:mm')}"/>
+                                            <div class="btn-group">
+                                                <button type="button" id="date-range" class="btn btn-white">
+                                                    <i class="glyphicon glyphicon-calendar"></i>
+                                                    <span class="date-title">[[${query.startTime}?${#dates.format(query.startTime*1000,'yyyy-MM-dd HH:mm')}]] 至
+                                                    [[${query.endTime}?${#dates.format(query.endTime*1000,'yyyy-MM-dd HH:mm')}]]</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 m-b-xs">
+                                        <input type="text" name="eventDesc" th:value="${query.eventDesc}" placeholder="请填写事件描述关键字" class="input-sm form-control">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
+                                    <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered table-hover dataTable">
+                                                <thead>
+                                                <tr>
+                                                    <th class="wrap-th">
+                                                        openid
+                                                    </th>
+                                                    <th>微信昵称</th>
+                                                    <th sortColumn="createTime">
+                                                        信息提交时间
+                                                    </th>
+                                                    <th >
+                                                        姓名
+                                                    </th>
+                                                    <th class="wrap-th">
+                                                        联系方式
+                                                    </th>
+                                                    <th sortColumn="happenTime">
+                                                        发生时间
+                                                    </th>
+                                                    <th >
+                                                        发生地点
+                                                    </th>
+                                                    <th >
+                                                        发生事件描述
+                                                    </th>
+                                                    <th >
+                                                        佐证材料
+                                                    </th>
+                                                    <th >
+                                                        状态
+                                                    </th>
+                                                    <th>
+                                                        分类
+                                                    </th>
+                                                    <th shiro:hasAnyRoles="admin,firstLevelAdmin" th:if="${isShow}">
+                                                        发放奖励
+                                                    </th>
+                                                    <th >
+                                                        操作
+                                                    </th>
+                                                    <th shiro:hasAnyRoles="admin,firstLevelAdmin" >
+                                                        回复用户
+                                                    </th>
+                                                    <th shiro:hasAnyRoles="admin,firstLevelAdmin" >
+                                                        操作记录
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="item:${page.result}">
+                                                    <td th:text="${item.fans?.openId}" class="wrap-th"></td>
+                                                    <td th:text="${item.fans?.nickName}"></td>
+                                                    <td th:text="${#dates.format(item.createTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                                    <td th:text="${item.isHide==1?'匿名':item.fans?.realName}"></td>
+                                                    <td th:text="${item.isHide==1?'匿名':item.fans?.mobile}" class="wrap-th"></td>
+                                                    <td th:text="${#dates.format(item.happenTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                                    <td th:text="${item.happenPlace}"></td>
+                                                    <td>
+                                                        [[${item.eventDesc}]]
+                                                        <th:block th:if="${!#strings.isEmpty(item.descVoice)}">
+                                                            <a href="javascript:void(0);" class="btn-white btn btn-xs" th:onclick="|javascript:ajaxpreview('report/showAudio?src=${urlPrefix}/${item.descVoice}',350,75);return false;|">语音描述，点击播放</a>
+                                                            <a th:href="|${urlPrefix}/${item.descVoice}|" class="btn-white btn btn-xs" target="_blank">下载</a>
+                                                        </th:block>
+                                                    </td>
+                                                    <td>
+                                                        <th:block th:if="${!#strings.isEmpty(item.descImages)}">
+
+                                                        <a th:each="obj:${#strings.arraySplit(item.descImages,',')}" href="javascript:void(0)" data-magnify="gallery" data-group="g1" th:data-src="|${urlPrefix}/${obj}|"><img  th:src="|${urlPrefix}/${obj}|" style="height: 60px;width: 40px;"/></a>
+                                                        </th:block>
+                                                        <th:block th:if="${!#strings.isEmpty(item.descVideo)}">
+                                                            <a href="javascript:void(0);" class="btn-white btn btn-xs" th:onclick="|javascript:ajaxpreview('report/showVideo?src=${urlPrefix}/${item.descVideo}',800,500);return false;|">播放</a>
+                                                        </th:block>
+                                                    </td>
+                                                    <td th:text="${item.statusString}"></td>
+                                                    <td>
+                                                        <select th:id="${item.reportId}" class="chooseType form-control" atr="1" th:disabled="${item.status==3 or item.status == 5 or item.status==6 or item.status==7}">
+                                                            <option value="">未分类</option>
+                                                            <option th:each="obj:${reportTypeList}" th:value="${obj.typeId}" th:selected="${obj.typeId==item.reportType1}" th:text="${obj.typeName}">
+                                                            </option>
+                                                        </select>
+                                                        <select class="chooseType form-control" atr="2" th:disabled="${item.status==3 or item.status == 5 or item.status==6 or item.status==7}">
+                                                            <option value="">未分类</option>
+                                                        </select>
+                                                    </td>
+                                                    <td shiro:hasAnyRoles="admin,firstLevelAdmin" th:if="${isShow}">
+                                                        <th:block th:switch="${globalSet?.receiveType}">
+                                                            <th:block th:case="1">
+                                                                <a th:if="${item.status==1 or item.status==3 or item.status==5 or item.status==7}" href="javascript:void(0);" th:onclick="|javascript:prize(${item.reportId},this,'first')|" th:disabled="${item.prizeStatus1==1||item.prizeStatus1==2}" class="btn-white btn btn-xs">初次奖励</a>
+                                                            </th:block>
+                                                            <th:block th:case="2">
+                                                                <a th:if="${item.status==3 or item.status==5 or item.status==7}" href="javascript:void(0);" th:onclick="|javascript:prize(${item.reportId},this,'first')|" th:disabled="${item.prizeStatus1==1||item.prizeStatus1==2}" class="btn-white btn btn-xs">初次奖励</a>
+                                                            </th:block>
+                                                        </th:block>
+                                                        <th:block th:if="${item.status==5 or item.status==7}">
+                                                            <a href="javascript:void(0);" th:onclick="|javascript:prize(${item.reportId},this,'second')|" th:disabled="${item.prizeStatus2==1||item.prizeStatus2==2}" class="btn-white btn btn-xs">追加奖励</a>
+                                                        </th:block>
+                                                    </td>
+                                                    <td>
+                                                        <th:block th:switch="${item.status}">
+                                                            <th:block th:case ="0" shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin">
+                                                                <a href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/firstCheckPass')|" class="btn-white btn btn-xs">初审通过</a>
+                                                                <a th:href="|report/${item.reportId}/firstCheckNoPass|" class="btn-white btn btn-xs">初审不通过</a>
+                                                            </th:block>
+                                                            <th:block th:case ="1">
+                                                                <a shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/cancelFirstCheckPass')|" class="btn-white btn btn-xs">取消初审通过</a>
+                                                                <a shiro:hasAnyRoles="admin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/reviewPass')|" class="btn-white btn btn-xs">复审通过</a>
+                                                                <a shiro:hasAnyRoles="admin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/reviewNoPass')|" class="btn-white btn btn-xs">复审不通过</a>
+                                                            </th:block>
+                                                            <th:block th:case ="2" shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin">
+                                                                <a th:href="|report/${item.reportId}/cancelFirstCheckNoPass|" class="btn-white btn btn-xs">取消初审不通过</a>
+                                                            </th:block>
+                                                            <th:block th:case ="3" shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                                <a th:href="|report/${item.reportId}/verifyPass|" class="btn-white btn btn-xs">核实</a>
+                                                                <a th:href="|report/${item.reportId}/verifyNoPass|" class="btn-white btn btn-xs">信息不准确</a>
+                                                                <a th:href="|report/${item.reportId}/cancelReviewPass|" class="btn-white btn btn-xs">取消复审通过</a>
+                                                            </th:block>
+                                                            <th:block th:case ="4" shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                                <a th:href="|report/${item.reportId}/cancelReviewNoPass|" class="btn-white btn btn-xs">取消复审未通过</a>
+                                                            </th:block>
+                                                            <th:block th:case ="5" shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                                <a th:href="|report/${item.reportId}/processed|" class="btn-white btn btn-xs">已整改</a>
+                                                                <a th:href="|report/${item.reportId}/cancelVerifyPass|" class="btn-white btn btn-xs">撤回核实</a>
+                                                            </th:block>
+                                                            <th:block th:case ="6" shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                                <a th:href="|report/${item.reportId}/cancelVerifyNoPass|" class="btn-white btn btn-xs">撤回操作</a>
+                                                            </th:block>
+                                                            <th:block th:case ="7" shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                                <a th:href="|report/${item.reportId}/cancelProcessed|" class="btn-white btn btn-xs">取消已整改</a>
+                                                            </th:block>
+                                                            <a href="#modal-form-remark" class="remarkCla btn-white btn btn-xs" th:id="${item.reportId+'re'}" data-toggle="modal">备注</a>
+                                                        </th:block>
+                                                    </td>
+                                                    <td shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                        <a href="#modal-form" class="replyCla btn-white btn btn-xs" th:id="${item.reportId+'r'}" data-toggle="modal">回复</a>
+                                                    </td>
+                                                    <td shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                        <a class="btn-white btn btn-xs" th:href="|operaterecord?reportId=${item.reportId}|">操作记录</a>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <th:block th:replace="~{page_tool_bar}"></th:block>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="modal-form" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <h3 class="m-t-none m-b">回复</h3>
+                            <form role="form">
+                                <input type="hidden" id="formReportId"/>
+                                <div class="form-group"><label>回复内容</label>
+                                    <textarea class="form-control" rows="5" id="reply"></textarea>
+                                <div>
+                                    <br/>
+                                    <button class="btn btn-sm btn-primary pull-right m-t-n-xs" id="replyBtn" type="button"><strong>确认</strong></button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-form-remark" class="modal fade" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <h3 class="m-t-none m-b">备注</h3>
+                        <form role="form">
+                            <input type="hidden" id="remarkReportId"/>
+                            <div class="form-group"><label>备注内容</label>
+                                <textarea class="form-control" rows="5" id="remark"></textarea>
+                                <div>
+                                    <br/>
+                                    <button class="btn btn-sm btn-primary pull-right m-t-n-xs" id="remarkBtn" type="button"><strong>确认</strong></button>
+                                </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        initReportType();
+        $(function () {
+            $('[data-magnify]').Magnify({
+                Toolbar: [
+                    'prev',
+                    'next',
+                    'rotateLeft',
+                    'rotateRight',
+                    'zoomIn',
+                    'actualSize',
+                    'zoomOut'
+                ],
+                keyboard:true,
+                draggable:false,
+                movable:true,
+                modalSize:[800,600]
+            });
+            $(".chooseType").each(function () {
+                var that = $(this);
+                var type = that.attr("atr");
+                that.bind("change",function () {
+                    var id;
+                    if (type == "1"){
+                        id = $(this).attr("id");
+                    }else {
+                        id = $(this).prev().attr("id");
+                    }
+                    var reportType = $(this).val();
+                    if ($(this).val() == ''){
+                        reportType = null;
+                    }
+                    $.ajax({
+                        url:"report/"+id+"/chooseType",
+                        data:{"reportType":reportType,"type":type},
+                        dataType:"json",
+                        success:function (obj) {
+                            if (obj.flag == false){
+                                alert("分类不成功");
+                            }
+                            var reportMap = obj.list;
+                            if (reportMap !=null && reportMap.length > 0){
+                                that.next().html("");
+                                var options='<option value="">未分类</option>';
+                                for(var i=0;i<reportMap.length;i++){
+                                    options +='<option value="'+reportMap[i].typeId+'">'+reportMap[i].typeName+'</option>';
+                                }
+                                that.next().html(options);
+                            }
+                        }
+                    });
+
+                });
+            });
+            $(".replyCla").click(function () {
+                var ids = $(this).attr("id");
+                var id = ids.replace("r","");
+                $.ajax({
+                    url:"report/"+id+"/getReply",
+                    dataType:"json",
+                    success:function (obj) {
+                        if (obj.flag==true){
+                            $("#reply").html("");
+                            $("#reply").html(obj.reply);
+                        }
+                    }
+                });
+                $("#formReportId").val(id);
+            });
+            $(".remarkCla").click(function () {
+                var ids = $(this).attr("id");
+                var id = ids.replace("re","");
+                $.ajax({
+                    url:"report/"+id+"/getRemark",
+                    dataType:"json",
+                    success:function (obj) {
+                        if (obj.flag==true){
+                            $("#remark").html("");
+                            $("#remark").html(obj.remark);
+                        }
+                    }
+                });
+                $("#remarkReportId").val(id);
+            });
+            $("#replyBtn").click(function () {
+                var id = $("#formReportId").val();
+                var replyText = $("#reply").val();
+                $.ajax({
+                    url:"report/"+id+"/reply",
+                    data:{"replyText":replyText},
+                    dataType:"json",
+                    success:function (obj) {
+                        if (obj.flag==true){
+                            alert("回复成功");
+                        }
+                    }
+                });
+                $("#modal-form").modal("hide","");
+            });
+            $("#remarkBtn").click(function () {
+                var id = $("#remarkReportId").val();
+                var remarkText = $("#remark").val();
+                $.ajax({
+                    url:"report/"+id+"/remark",
+                    data:{"remarkText":remarkText},
+                    dataType:"json",
+                    success:function (obj) {
+                        if (obj.flag==true){
+                            alert("备注成功");
+                        }
+                    }
+                });
+                $("#modal-form-remark").modal("hide","");
+            });
+            
+            $("#export").click(function () {
+                $("#queryForm").attr("action","report/export");
+                $("#queryForm").submit();
+                $("#queryForm").attr("action","");
+            });
+        });
+
+        function initReportType() {
+            var numArr = [];
+            var idsArr = [];
+            $(".chooseType").each(function () {
+                if ($(this).attr("atr")=="1"){
+                    numArr.push($(this).val());
+                    idsArr.push($(this).attr("id"));
+                }
+            });
+            $.ajax({
+                url:"report/getReports",
+                data:{typeIds:numArr.toString(),reportIds:idsArr.toString()},
+                dataType:"json",
+                success:function (array) {
+                    for(var i in array){
+                        _data = array[i];
+                        var sect = $("select[id="+_data.reportId+"]").next();
+                        var mapOp = _data.arr;
+                        var options='<option value="">未分类</option>';
+                        for(var j=0;j<mapOp.length;j++){
+                            if (_data.type2 == mapOp[j].typeId){
+                                options +='<option value="'+mapOp[j].typeId+'" selected="selected">'+mapOp[j].typeName+'</option>';
+                            }else {
+                                options +='<option value="'+mapOp[j].typeId+'">'+mapOp[j].typeName+'</option>';
+                            }
+                        }
+                        sect.html("");
+                        sect.html(options);
+                    }
+                }
+            });
+        }
+
+        function onCheck(obj,url) {
+            var reportType = $("#"+obj);
+            var reportType2 = reportType.next();
+            if (reportType.val() != null && reportType.val() != '' && reportType2.val() != null && reportType2.val() != ''){
+                window.location.href=url;
+            }else {
+                alert("请先选择分类再操作");
+                return false;
+            }
+        }
+
+        function prize(id,obj,type) {
+            var url="";
+            if($(obj).attr("disabled") == "disabled"){
+                return false;
+            }
+            if (type =="first"){
+                if(confirm("确认要执行【初次奖励发放】操作吗？")){
+                    if ($(obj).attr("disabled") !=undefined ){
+                        if($(obj).attr("disabled") == "disabled") {
+                            alert("初次奖励已发放");
+                            return;
+                        }
+                    }
+                    url="report/"+id+"/firstPrize";
+                }else {
+                    return false;
+                }
+            }else {
+                if(confirm("确认要执行【追加奖励发放】操作吗？")){
+                    if ($(obj).attr("disabled") !=undefined ){
+                        if($(obj).attr("disabled") == "disabled") {
+                            alert("追加奖励已发放");
+                            return;
+                        }
+                    }
+                    url="report/"+id+"/secondPrize";
+                }else {
+                    return false;
+                }
+            }
+            if(url != ""){
+                $.ajax({
+                    url:url,
+                    async:true,
+                    dataType:"json",
+                    success:function(objs){
+                        if (objs.flag==true){
+                            $(obj).attr("disabled","disabled");
+                            alert("发放成功");
+                        }else {
+                            alert(objs.message);
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+</th:block>
+</body>
+</html>

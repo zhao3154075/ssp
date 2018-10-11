@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="ReportStatistics">
+
+	<resultMap id="RM_ReportStatistics" type="com.es.ssp.model.ReportStatistics">
+        <result property="recordId" column="recordId"/>
+        <result property="totalReport" column="totalReport"/>
+        <result property="totalStatus1" column="totalStatus1"/>
+        <result property="totalStatus2" column="totalStatus2"/>
+        <result property="totalStatus3" column="totalStatus3"/>
+        <result property="totalStatus4" column="totalStatus4"/>
+		<result property="totalStatus5" column="totalStatus5"/>
+		<result property="totalStatus6" column="totalStatus6"/>
+		<result property="totalStatus7" column="totalStatus7"/>
+		<result property="totalStatus8" column="totalStatus8"/>
+        <result property="totalAmount" column="totalAmount"/>
+        <result property="fansId" column="fansId"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="ReportStatistics.columns">
+	    <![CDATA[
+		recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,fansId
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="ReportStatistics.insert" useGeneratedKeys="true" keyProperty="recordId">
+    <![CDATA[
+        INSERT INTO report_statistics (
+         recordId, totalReport, totalStatus1, totalStatus2, totalStatus3, totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8, totalAmount, fansId
+        ) VALUES (
+         #{recordId}, #{totalReport}, #{totalStatus1}, #{totalStatus2}, #{totalStatus3}, #{totalStatus4}, #{totalStatus5}, #{totalStatus6}, #{totalStatus7}, #{totalStatus8}, #{totalAmount}, #{fansId}
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="ReportStatistics.update" >
+    <![CDATA[
+        UPDATE report_statistics SET
+	        totalReport = #{totalReport} , totalStatus1 = #{totalStatus1} , totalStatus2 = #{totalStatus2} , totalStatus3 = #{totalStatus3} , totalStatus4 = #{totalStatus4}, totalStatus5 = #{totalStatus5} , totalStatus6 = #{totalStatus6} , totalStatus7 = #{totalStatus7} , totalStatus8 = #{totalStatus8} , totalAmount = #{totalAmount} , fansId = #{fansId}
+        WHERE 
+        	recordId = #{recordId}  	        
+    ]]>
+	</update>
+
+    <delete id="ReportStatistics.delete">
+    <![CDATA[
+        DELETE FROM report_statistics WHERE
+        recordId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="ReportStatistics.getById" resultMap="RM_ReportStatistics">
+		SELECT <include refid="ReportStatistics.columns" />
+	    <![CDATA[
+		    FROM report_statistics 
+	        WHERE 
+		        recordId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="ReportStatistics.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+			<if test="@Ognl@isNotEmpty(openId)">
+				AND t3.openId = #{openId}
+			</if>
+			<if test="@Ognl@isNotEmpty(nickName)">
+				AND t3.nickName LIKE CONCAT('%',#{nickName},'%')
+			</if>
+			<if test="@Ognl@isNotEmpty(realName)">
+				AND t3.realName LIKE CONCAT('%',#{realName},'%')
+			</if>
+			<if test="@Ognl@isNotEmpty(mobile)">
+				AND t3.mobile LIKE CONCAT('%',#{mobile},'%')
+			</if>
+	</sql>
+		
+    <select id="ReportStatistics.findByFansId" resultMap="RM_ReportStatistics">
+        SELECT <include refid="ReportStatistics.columns" />
+        FROM report_statistics
+        WHERE fansId=#{id}
+    </select>
+
+
+    <select id="ReportStatistics.findAll" resultType="Map">
+		SELECT openId,nickName,realName,mobile,recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,totalAmountYear
+		FROM
+		(SELECT t.recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t.totalAmount,t.fansId,t1.totalAmount AS totalAmountYear
+		FROM report_statistics t LEFT JOIN report_statistics_year t1
+		ON t.fansId=t1.fansId
+		WHERE t1.year=#{year}) t2 LEFT JOIN fans t3 ON t2.fansId=t3.fansId
+		<include refid="ReportStatistics.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+	</select>
+
+	<select id="ReportStatistics.findPage" resultType="Map">
+        SELECT openId,nickName,realName,mobile,recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,totalAmountYear
+		FROM
+		(SELECT t.recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t.totalAmount,t.fansId,t1.totalAmount AS totalAmountYear
+		FROM report_statistics t LEFT JOIN report_statistics_year t1
+		ON t.fansId=t1.fansId
+		WHERE t1.year=#{year}) t2 LEFT JOIN fans t3 ON t2.fansId=t3.fansId
+		<include refid="ReportStatistics.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+	</select>
+	<select id="ReportStatistics.findPage.count" resultType="long">
+		SELECT count(*) FROM
+		(SELECT t.recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t.totalAmount,t.fansId,t1.totalAmount AS totalAmountYear
+		FROM report_statistics t LEFT JOIN report_statistics_year t1
+		ON t.fansId=t1.fansId
+		WHERE t1.year=#{year}) t2 LEFT JOIN fans t3 ON t2.fansId=t3.fansId
+		<include refid="ReportStatistics.findPage.where"/>
+	</select>
+</mapper>
+

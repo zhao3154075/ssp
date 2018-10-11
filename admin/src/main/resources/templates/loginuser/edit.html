@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base_form}">
+<body>
+<th:block layout:fragment="form_title">
+    <li>
+        <a>分管账号管理</a>
+    </li>
+    <li>
+        <a href="loginuser">账号列表</a>
+    </li>
+    <li class="active">
+        <strong>修改账号</strong>
+    </li>
+</th:block>
+<th:block layout:fragment="form_content">
+    <form th:method="put" th:action="|loginuser/${loginUser.userId}|" class="form-horizontal form-wizard form validate">
+        <th:block th:replace="~{loginuser/form_include}"></th:block>
+    </form>
+</th:block>
+</body>
+</html>

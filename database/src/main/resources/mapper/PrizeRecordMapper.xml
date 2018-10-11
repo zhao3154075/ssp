@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="PrizeRecord">
+
+	<resultMap id="RM_PrizeRecord" type="com.es.ssp.model.PrizeRecord">
+        <result property="recordId" column="recordId"/>
+        <result property="fansId" column="fansId"/>
+        <result property="createTime" column="createTime"/>
+        <result property="status" column="status"/>
+        <result property="reportId" column="reportId"/>
+        <result property="type" column="type"/>
+        <result property="amount" column="amount"/>
+        <result property="errorInfo" column="errorInfo"/>
+        <result property="billno" column="billno"/>
+	<association property="report" column="reportId" fetchType="lazy"
+			 select="Report.getById" />
+	<association property="fans" column="fansId" fetchType="lazy"
+			 select="Fans.getById" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="PrizeRecord.columns">
+	    <![CDATA[
+		recordId,t.fansId,t.createTime,t.status,reportId,type,amount,errorInfo,billno
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="PrizeRecord.insert" useGeneratedKeys="true" keyProperty="recordId">
+    <![CDATA[
+        INSERT INTO prize_record (
+         recordId, fansId, createTime, status, reportId, type, amount, errorInfo, billno
+        ) VALUES (
+         #{recordId}, #{fansId}, #{createTime}, #{status}, #{reportId}, #{type}, #{amount}, #{errorInfo}, #{billno}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="PrizeRecord.update" >
+    <![CDATA[
+        UPDATE prize_record SET
+	        fansId = #{fansId} , createTime = #{createTime} , status = #{status} , reportId = #{reportId} , type = #{type} , amount = #{amount} , errorInfo = #{errorInfo} , billno = #{billno}  
+        WHERE 
+        	recordId = #{recordId}  	        
+    ]]>
+	</update>
+
+    <delete id="PrizeRecord.delete">
+    <![CDATA[
+        DELETE FROM prize_record WHERE
+        recordId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="PrizeRecord.getById" resultMap="RM_PrizeRecord">
+		SELECT <include refid="PrizeRecord.columns" />
+	    <![CDATA[
+		    FROM prize_record t
+	        WHERE 
+		        recordId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="PrizeRecord.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>
+	       <if test="@Ognl@isNotEmpty(recordId)">
+				AND recordId = #{recordId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(fansId)">
+				AND t.fansId = #{fansId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(createTime)">
+				AND t.createTime = #{createTime}
+			</if>
+	       <if test="@Ognl@isNotEmpty(status)">
+				AND t.status = #{status}
+			</if>
+	       <if test="@Ognl@isNotEmpty(reportId)">
+				AND reportId = #{reportId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(type)">
+				AND t.type = #{type}
+			</if>
+	       <if test="@Ognl@isNotEmpty(amount)">
+				AND amount = #{amount}
+			</if>
+	       <if test="@Ognl@isNotEmpty(errorInfo)">
+				AND errorInfo = #{errorInfo}
+			</if>
+	       <if test="@Ognl@isNotEmpty(billno)">
+				AND billno = #{billno}
+			</if>
+			<if test="@Ognl@isNotEmpty(openId)">
+				AND t1.openId = #{openId}
+			</if>
+			<if test="@Ognl@isNotEmpty(nickName)">
+				AND t1.nickName LIKE CONCAT('%',#{nickName},'%')
+			</if>
+		</where>
+	</sql>
+		
+    <select id="PrizeRecord.findPage.count" resultType="long">
+        SELECT count(*) FROM prize_record t
+		<if test="@Ognl@isNotEmpty(openId)||@Ognl@isNotEmpty(nickName)">
+			LEFT JOIN fans t1 ON t.fansId=t1.fansId
+		</if>
+		<include refid="PrizeRecord.findPage.where"/>
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="PrizeRecord.findPage" resultMap="RM_PrizeRecord">
+    	SELECT <include refid="PrizeRecord.columns" />
+	    FROM prize_record t
+		<if test="@Ognl@isNotEmpty(openId)||@Ognl@isNotEmpty(nickName)">
+		LEFT JOIN fans t1 ON t.fansId=t1.fansId
+	    </if>
+		<include refid="PrizeRecord.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+    <select id="PrizeRecord.findByReportId" resultMap="RM_PrizeRecord">
+        SELECT <include refid="PrizeRecord.columns" />
+        FROM prize_record t
+        WHERE reportId=#{id}
+    </select>
+
+    <select id="PrizeRecord.findByFansId" resultMap="RM_PrizeRecord">
+        SELECT <include refid="PrizeRecord.columns" />
+        FROM prize_record t
+        WHERE fansId=#{id}
+    </select>
+
+
+    <select id="PrizeRecord.findAll" resultMap="RM_PrizeRecord">
+		SELECT <include refid="PrizeRecord.columns" />
+		FROM prize_record t
+		<if test="@Ognl@isNotEmpty(openId)||@Ognl@isNotEmpty(nickName)">
+			LEFT JOIN fans t1 ON t.fansId=t1.fansId
+		</if>
+		<include refid="PrizeRecord.findPage.where"/>
+
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+	</select>
+
+	<select id="PrizeRecord.getTotalAmount" resultType="long">
+		SELECT sum(amount) FROM prize_record WHERE fansId=${fansId}
+
+		<if test="@Ognl@isNotEmpty(startTime)">
+		<![CDATA[
+		AND createTime > ${startTime}
+			AND createTime < ${endTime}
+			]]>
+		</if>
+	</select>
+
+	<select id="PrizeRecord.getTotalCount" resultType="long">
+		SELECT COUNT(*) FROM prize_record WHERE fansId=${fansId}
+		AND `type`=${type}
+		<if test="@Ognl@isNotEmpty(startTime)">
+			<![CDATA[
+		AND createTime > ${startTime}
+			AND createTime < ${endTime}
+			]]>
+		</if>
+	</select>
+</mapper>
+

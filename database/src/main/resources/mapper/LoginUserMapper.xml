@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="LoginUser">
+
+	<resultMap id="RM_LoginUser" type="com.es.ssp.model.LoginUser">
+        <result property="userId" column="userId"/>
+        <result property="userName" column="userName"/>
+        <result property="realName" column="realName"/>
+        <result property="mobile" column="mobile"/>
+        <result property="roleType" column="roleType"/>
+        <result property="psw" column="psw"/>
+        <result property="createTime" column="createTime"/>
+        <result property="status" column="status"/>
+	<!--<association property="operateRecords" column="userId" fetchType="lazy"
+				 select="OperateRecord.findByUserId" />-->
+		<association property="userRoles" column="userId" fetchType="lazy"
+					 select="UserRole.findByUserId" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="LoginUser.columns">
+	    <![CDATA[
+		userId,userName,realName,mobile,roleType,psw,createTime,status
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="LoginUser.insert" useGeneratedKeys="true" keyProperty="userId">
+    <![CDATA[
+        INSERT INTO login_user (
+         userId, userName, realName, mobile, roleType, psw, createTime, status
+        ) VALUES (
+         #{userId}, #{userName}, #{realName}, #{mobile}, #{roleType}, #{psw}, #{createTime}, #{status}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="LoginUser.update" >
+    <![CDATA[
+        UPDATE login_user SET
+	        userName = #{userName} , realName = #{realName} , mobile = #{mobile} , roleType = #{roleType} , psw = #{psw} , createTime = #{createTime} , status = #{status}  
+        WHERE 
+        	userId = #{userId}  	        
+    ]]>
+	</update>
+
+    <delete id="LoginUser.delete">
+    <![CDATA[
+        DELETE FROM login_user WHERE
+        userId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="LoginUser.getById" resultMap="RM_LoginUser">
+		SELECT <include refid="LoginUser.columns" />
+	    <![CDATA[
+		    FROM login_user 
+	        WHERE 
+		        userId = #{id} 
+	    ]]>
+	</select>
+
+	<select id="LoginUser.getByUserName" resultMap="RM_LoginUser">
+		SELECT <include refid="LoginUser.columns" />
+		<![CDATA[
+		    FROM login_user
+	        WHERE
+		        userName = #{userName}
+	    ]]>
+	</select>
+	
+	<sql id="LoginUser.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(userId)">
+				AND userId = #{userId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(userName)">
+				AND userName = #{userName}
+			</if>
+	       <if test="@Ognl@isNotEmpty(realName)">
+				AND realName = #{realName}
+			</if>
+	       <if test="@Ognl@isNotEmpty(mobile)">
+				AND mobile = #{mobile}
+			</if>
+	       <if test="@Ognl@isNotEmpty(roleType)">
+				AND roleType = #{roleType}
+			</if>
+	       <if test="@Ognl@isNotEmpty(psw)">
+				AND psw = #{psw}
+			</if>
+	       <if test="@Ognl@isNotEmpty(createTime)">
+				AND createTime = #{createTime}
+			</if>
+	       <if test="@Ognl@isNotEmpty(status)">
+				AND status = #{status}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="LoginUser.findPage.count" resultType="long">
+        SELECT count(*) FROM login_user 
+		<include refid="LoginUser.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="LoginUser.findPage" resultMap="RM_LoginUser">
+    	SELECT <include refid="LoginUser.columns" />
+	    FROM login_user 
+		<include refid="LoginUser.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="LoginUser.findAll" resultMap="RM_LoginUser">
+	    SELECT <include refid="LoginUser.columns" />
+		FROM login_user
+		<include refid="LoginUser.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+

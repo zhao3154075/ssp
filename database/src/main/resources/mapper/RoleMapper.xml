@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="Role">
+
+	<resultMap id="RM_Role" type="com.es.ssp.model.Role">
+        <result property="roleId" column="roleId"/>
+        <result property="name" column="name"/>
+        <result property="identification" column="identification"/>
+	<association property="rolePermissions" column="roleId" fetchType="lazy"
+				 select="RolePermission.findByRoleId" />
+	<association property="userRoles" column="roleId" fetchType="lazy"
+				 select="UserRole.findByRoleId" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="Role.columns">
+	    <![CDATA[
+		roleId,name,identification
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="Role.insert" useGeneratedKeys="true" keyProperty="roleId">
+    <![CDATA[
+        INSERT INTO u_role (
+         roleId, name, identification
+        ) VALUES (
+         #{roleId}, #{name}, #{identification}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="Role.update" >
+    <![CDATA[
+        UPDATE u_role SET
+	        name = #{name} , identification = #{identification}  
+        WHERE 
+        	roleId = #{roleId}  	        
+    ]]>
+	</update>
+
+    <delete id="Role.delete">
+    <![CDATA[
+        DELETE FROM u_role WHERE
+        roleId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="Role.getById" resultMap="RM_Role">
+		SELECT <include refid="Role.columns" />
+	    <![CDATA[
+		    FROM u_role 
+	        WHERE 
+		        roleId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="Role.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(roleId)">
+				AND roleId = #{roleId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(name)">
+				AND name = #{name}
+			</if>
+	       <if test="@Ognl@isNotEmpty(identification)">
+				AND identification = #{identification}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="Role.findPage.count" resultType="long">
+        SELECT count(*) FROM u_role 
+		<include refid="Role.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="Role.findPage" resultMap="RM_Role">
+    	SELECT <include refid="Role.columns" />
+	    FROM u_role 
+		<include refid="Role.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="Role.findAll" resultMap="RM_Role">
+	    SELECT <include refid="Role.columns" />
+		FROM u_role
+		<include refid="Role.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+

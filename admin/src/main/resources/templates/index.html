@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      layout:decorate="~{base}">
+<head>
+    <title>后台管理系统</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li shiro:hasAnyRoles="admin,firstLevelAdmin">
+                        <a><i class="fa fa-users"></i> <span class="nav-label">信息显示与管理</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="report" target="main">信息汇总</a></li>
+                            <li><a href="report?status=0" target="main">待初审</a></li>
+                            <li><a href="report?status=2" target="main">初审不通过</a></li>
+                            <li><a href="report?status=1" target="main">待复审</a></li>
+                            <li><a href="report?status=4" target="main">复审未通过</a></li>
+                            <li><a href="report?status=3" target="main">待核实</a></li>
+                            <li><a href="report?status=6" target="main">信息不准确</a></li>
+                            <li><a href="report?status=5" target="main">待整改</a></li>
+                            <li><a href="report?status=7" target="main">已整改</a></li>
+                        </ul>
+                    </li>
+                    <li shiro:hasAnyRoles="secondLevelAdmin">
+                        <a><i class="fa fa-users"></i> <span class="nav-label">信息显示与管理</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="report?status=0" target="main">待初审</a></li>
+                            <li><a href="report?status=1" target="main">初审通过</a></li>
+                            <li><a href="report?status=2" target="main">初审不通过</a></li>
+                        </ul>
+                    </li>
+                    <li shiro:hasAllRoles="admin">
+                        <a><i class="fa fa-sitemap"></i> <span class="nav-label">奖励标准</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="reporttype" target="main">分类列表</a></li>
+                            <li><a href="reporttype/new" target="main">创建分类</a></li>
+                        </ul>
+                    </li>
+                    <li shiro:hasAnyRoles="admin">
+                            <a href="act"><i class="fa fa-child"></i> <span class="nav-label">分账号管理</span><span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="loginuser?roleType=2" target="main">系统管理员账号</a></li>
+                                <li><a href="loginuser?roleType=3" target="main">一级管理员账号</a></li>
+                                <li><a href="loginuser?roleType=4" target="main">二级管理员账号</a></li>
+                                <li><a href="loginuser/new" target="main">创建账号</a></li>
+                            </ul>
+                        </li>
+                    <li shiro:hasAnyRoles="admin,firstLevelAdmin">
+                        <a href="act"><i class="fa fa-shopping-cart"></i> <span class="nav-label">奖励发放</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="prizerecord?type=0" target="main">初始发放记录</a></li>
+                            <li><a href="prizerecord?type=1" target="main">追加发放记录</a></li>
+                            <li><a href="globalsetting/edit" target="main">初始奖励发放设置</a></li>
+                            <li><a href="reporttype/list" target="main">追加奖励发放标准</a></li>
+                        </ul>
+                    </li>
+                    <li shiro:hasAnyRoles="admin,firstLevelAdmin">
+                        <a href="act"><i class="fa fa-lemon-o"></i> <span class="nav-label">用户管理</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="reportstatistics" target="main">用户分析</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="loginuser/changePsw" target="main"><i class="fa fa-gear"></i> <span class="nav-label">修改密码</span></a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary "><i class="fa fa-bars"></i> </a>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message">欢迎</span>
+                            <span class="m-r-sm text-muted welcome-message">[[${session.username}]]</span>
+                        </li>
+                        <li>
+                            <a href="loginuser/logout">
+                                <i class="fa fa-sign-out"></i> 退出
+                            </a>
+                        </li>
+                    </ul>
+
+                </nav>
+            </div>
+            <div class="row">
+                <iframe width="100%" frameborder="0" style="min-width:800px; overflow:auto;margin:0px;padding:0px;" name="main" id="main"></iframe>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $("#main").height($(window).height()-79);
+            $(window).resize(function(){
+                $("#main").height($(window).height()-79);
+            });}
+        )
+    </script>
+</th:block>
+</body>
+</html>

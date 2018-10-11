@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" xmlns:shiro="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{base}">
+<head>
+    <script type="text/javascript" th:src="|${urlPrefix}/scripts/simpletable/simpletable.js|"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function () {
+            // 分页需要依赖的初始化动作
+            window.simpleTable = new SimpleTable('queryForm', [[${page.thisPageNumber}]], [[${page.pageSize}]], [[${query.sortColumns}]], "pageNumber");
+        });
+    </script>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div id="wrapper" class="gray-bg" style="padding:0 15px;">
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2></h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a>信息汇总</a>
+                    </li>
+                    <li class="active">
+                        <strong>操作记录</strong>
+                    </li>
+                </ol>
+                </h3>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools">
+                                <a href="javascript:document.location.reload();">
+                                    <i class="fa fa-rotate-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                <form action="operaterecord" name="queryForm" id="queryForm">
+                                    <input type="hidden" name="reportId" th:value="${query.reportId}"/>
+                                    <div class="row">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="history.back(-1);"><i class="fa fa-undo"></i><span>返回</span></button>
+                                    </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered table-hover dataTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>
+                                                        操作者用户名
+                                                    </th>
+                                                    <th>操作者姓名</th>
+                                                    <th>
+                                                        操作内容
+                                                    </th>
+                                                    <th sortColumn="createTime">
+                                                        操作时间
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="item:${page.result}">
+                                                    <td th:text="${item.loginUser?.userName}"></td>
+                                                    <td th:text="${item.loginUser?.realName}"></td>
+                                                    <td th:text="${item.desc}"></td>
+                                                    <td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                                </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <th:block th:replace="~{page_tool_bar}"></th:block>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

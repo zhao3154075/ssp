@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <base th:href="|//${#request.getServerName()}${#request.getContextPath()}/|">
+    <meta charset="UTF-8">
+    <title>“随手拍”文明创建信息报送平台</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="stylesheet" th:href="|${urlPrefix}/styles/weui.css|"/>
+    <link rel="stylesheet" th:href="|${urlPrefix}/styles/example.css|"/>
+    <script th:src="|${urlPrefix}/scripts/zepto.min.js|"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=76VBZ-L3F3U-FNZVM-B4HQN-FFMRQ-6WF6X"></script>
+</head>
+<body ontouchstart>
+<th:block layout:fragment="content"></th:block>
+<script th:src="|${urlPrefix}/scripts/weui.min.js|"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="GlobalSetting">
+
+	<resultMap id="RM_GlobalSetting" type="com.es.ssp.model.GlobalSetting">
+        <result property="settingId" column="settingId"/>
+        <result property="dayLimit" column="dayLimit"/>
+        <result property="firstAmount" column="firstAmount"/>
+        <result property="receiveType" column="receiveType"/>
+        <result property="updateTime" column="updateTime"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="GlobalSetting.columns">
+	    <![CDATA[
+		settingId,dayLimit,firstAmount,receiveType,updateTime
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="GlobalSetting.insert" useGeneratedKeys="true" keyProperty="settingId">
+    <![CDATA[
+        INSERT INTO global_setting (
+         settingId, dayLimit, firstAmount, receiveType, updateTime
+        ) VALUES (
+         #{settingId}, #{dayLimit}, #{firstAmount}, #{receiveType}, #{updateTime}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="GlobalSetting.update" >
+    <![CDATA[
+        UPDATE global_setting SET
+	        dayLimit = #{dayLimit} , firstAmount = #{firstAmount} , receiveType = #{receiveType} , updateTime = #{updateTime}  
+        WHERE 
+        	settingId = #{settingId}  	        
+    ]]>
+	</update>
+
+    <delete id="GlobalSetting.delete">
+    <![CDATA[
+        DELETE FROM global_setting WHERE
+        settingId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="GlobalSetting.getById" resultMap="RM_GlobalSetting">
+		SELECT <include refid="GlobalSetting.columns" />
+	    <![CDATA[
+		    FROM global_setting 
+	        WHERE 
+		        settingId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="GlobalSetting.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(settingId)">
+				AND settingId = #{settingId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(dayLimit)">
+				AND dayLimit = #{dayLimit}
+			</if>
+	       <if test="@Ognl@isNotEmpty(firstAmount)">
+				AND firstAmount = #{firstAmount}
+			</if>
+	       <if test="@Ognl@isNotEmpty(receiveType)">
+				AND receiveType = #{receiveType}
+			</if>
+	       <if test="@Ognl@isNotEmpty(updateTime)">
+				AND updateTime = #{updateTime}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="GlobalSetting.findPage.count" resultType="long">
+        SELECT count(*) FROM global_setting 
+		<include refid="GlobalSetting.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="GlobalSetting.findPage" resultMap="RM_GlobalSetting">
+    	SELECT <include refid="GlobalSetting.columns" />
+	    FROM global_setting 
+		<include refid="GlobalSetting.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="GlobalSetting.findAll" resultMap="RM_GlobalSetting">
+	    SELECT <include refid="GlobalSetting.columns" />
+		FROM global_setting
+		<include refid="GlobalSetting.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+

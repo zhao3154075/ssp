@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <style>
+        <!--
+        .btn_radio {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        -->
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container" id="container">
+        <div class="page js_show">
+            <div class="page__hd">
+                <h1 class="page__title">“随手拍”文明创建信息报送平台</h1>
+            </div>
+        <div class="page__bd">
+            <div class="weui-cells__title">基础信息</div>
+            <div class="weui-cells weui-cells_form ">
+                <label class="weui-cell weui-check__label weui-cells_checkbox" for="isHide">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" name="isHide" id="isHide"/>
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>匿名</p>
+                    </div>
+                </label>
+                <div class="weui-cell theinfo">
+                    <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input clear_error_msg" type="text" name="realName" maxlength="4" placeholder="请输入您的姓名" th:readonly="!${#strings.isEmpty(fans?.realName)}" th:value="${fans?.realName}"/>
+                    </div>
+                </div>
+                <div class="weui-cell theinfo">
+                    <div class="weui-cell__hd"><label class="weui-label">联系方式</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input clear_error_msg" name="mobile"  placeholder="请输入您的座机或手机号" th:readonly="!${#strings.isEmpty(fans?.mobile)}" th:value="${fans?.mobile}"/>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">发生时间</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input clear_error_msg" type="datetime-local" value="" placeholder="" name="happenTimeString"/>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells__title">发生地点</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">杭州市西湖区</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input clear_error_msg" name="happenPlace1" readonly="readonly" placeholder="点击选择"/>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea clear_error_msg" name="happenPlace" maxlength="50" placeholder="请完善具体地址" rows="2"></textarea>
+                        <div class="weui-textarea-counter"><span>0</span>/50</div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells__title">事件描述</div>
+            <div class="weui-cells weui-cells_radio">
+                <label class="weui-cell weui-check__label" for="x11">
+                    <div class="weui-cell__bd">
+                        <p>文字描述</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" value="0" class="weui-check" name="descType" id="x11" checked="checked"/>
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+                <label class="weui-cell weui-check__label" for="x12">
+
+                    <div class="weui-cell__bd">
+                        <p>语音描述</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" value="1" name="descType" class="weui-check" id="x12"/>
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+            </div>
+            <div class="weui-cells weui-cells_form eventDesc">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea class="weui-textarea" name="eventDesc" placeholder="请输入描述文字" rows="3"></textarea>
+                        <div class="weui-textarea-counter"><span>0</span>/300</div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-btn-area btn-radio">
+                <a href="javascript:;" class="weui-btn weui-btn_plain-primary btn_radio">长按添加录音</a>
+            </div>
+            <div class="weui-cells__title">佐证材料</div>
+            <div class="weui-gallery" id="gallery">
+                <span class="weui-gallery__img" id="galleryImg"></span>
+                <div class="weui-gallery__opr">
+                    <a href="javascript:" class="weui-gallery__del">
+                        <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">图片上传</p>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files img_list" id="uploaderFiles">
+                                </ul>
+                                <div class="weui-uploader__input-box img-btn">
+                                    <input class="weui-uploader__input img_btn" type="button"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells weui-cells_form" id="uploader">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">视频上传</p>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files" id="uploaderVedio" style="display: none">
+                                    <li class="weui-uploader__file img_div"><video style="width: 100%;height: 100%;" controls preload="auto"></video><input type="hidden" name="descVideo"></li>
+                                </ul>
+                                <div class="weui-uploader__input-box">
+                                    <input id="uploaderInput" class="weui-uploader__input" type="file" name="file" multiple/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-btn-area">
+                <a class="weui-btn weui-btn_primary submit_btn" href="javascript:" id="submit">提交</a>
+            </div>
+            <!-- loading toast -->
+            <div id="loadingToast" style="display:none;">
+                <div class="weui-mask_transparent"></div>
+                <div class="weui-toast">
+                    <i class="weui-loading weui-icon_toast"></i>
+                    <p class="weui-toast__content">数据加载中</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <input type="hidden" id="voiceLocalId">
+    <input type="hidden" id="voiceServerId" name="voiceServerId">
+    <div id="img_clone" style="display:none">
+        <li class="weui-uploader__file img_div"><input type="hidden" name="imgServerIds"></li>
+    </div>
+    <script th:src="|${urlPrefix}/scripts/positions.js|"></script>
+    <script th:src="|${urlPrefix}/scripts/upload.js|"></script>
+    <script>
+        var backUrl='index?openId=[[${fans?.openId}]]';
+        var locs="西湖";
+        var playStatus=0;
+        var timeOutEvent=0;
+        var submiting=0;
+        // 判断是否为手机号
+        var isPoneAvailable=function (pone) {
+            var myreg = /^1[0-9]{10}$/;
+            if (!myreg.test(pone)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        // 判断是否为电话号码
+        var isTelAvailable=function (tel) {
+            var myreg = /^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
+            if (!myreg.test(tel)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        function check(){
+            if(located!=1){
+                weui.alert("无法获取当前定位信息");
+                return false;
+            }
+            if(!inarea){
+                weui.alert("对不起，不在西湖区范围无法参加");
+                return false;
+            }
+            errorMsg="";
+            result=true;
+            if($("[name=realName]").val()!=""&&$("[name=realName]").val().length>4){
+                showError($("[name=realName]"));
+                result=false;
+                errorMsg+="姓名长度不能超过4个字<br/>";
+            }
+            if($("[name=mobile]").val()!=""){
+                if(isPoneAvailable($("[name=mobile]").val())||isTelAvailable($("[name=mobile]").val())){
+
+                }else{
+                    showError($("[name=mobile]"));
+                    result=false;
+                    errorMsg+="请输入有效的座机或手机号<br/>";
+                }
+            }
+            if($("[name=happenTimeString]").val()==""){
+                showError($("[name=happenTimeString]"));
+                result=false;
+                errorMsg+="请输入发生时间<br/>";
+            }
+            if($("[name=happenPlace]").val().length>50){
+                result=false;
+                errorMsg+="具体地址不能超过50个字<br/>";
+            }
+            if($("[name=descType]:checked").val()=="0"){
+                if($("[name=eventDesc]").val().trim()==""){
+                    result=false;
+                    errorMsg+="请输入描述文字<br/>";
+                }else if($("[name=eventDesc]").val().length>300){
+                    result=false;
+                    errorMsg+="描述文字不能超过300个字<br/>";
+                }
+            }else{
+                if($("#voiceServerId").val()==""){
+                    result=false;
+                    errorMsg+="请录入语音描述<br/>";
+                }
+            }
+            if($(".img_list").find(".img_div").size()<1&&$("[name=descVideo]").val()==""){
+                result=false;
+                errorMsg+="至少上传1张图片或一个视频<br/>";
+            }
+            if($(".img_list").find(".img_div").size()>5){
+                result=false;
+                errorMsg+="最多上传5张图片<br/>";
+            }
+            if(errorMsg!=""){
+                weui.alert(errorMsg);
+            }
+            return result;
+        }
+        function showError(obj){
+            parentLi=obj.parent().parent();
+            parentLi.removeClass("weui-cell_warn").addClass("weui-cell_warn");
+            if(parentLi.find(".weui-cell__ft").length==0){
+                parentLi.append("<div class=\"weui-cell__ft\"><i class=\"weui-icon-warn\"></i></div>");
+            }
+        }
+        function clearError(){
+            $(".clear_error_msg").on("change",function(){
+                parentLi=$(this).parent().parent();
+                parentLi.removeClass("weui-cell_warn");
+                parentLi.find(".weui-cell__ft").remove();
+            });
+        }
+        function wordsCounter() {
+            $(".weui-textarea-counter").each(function () {
+                var _this_textarea=$(this).prev();
+                var _this_span=$(this).find("span");
+                _this_textarea.on("change",function(){
+                    _this_span.text(_this_textarea.val().length);
+                });
+            });
+        }
+        function cityPicker(){
+            $("[name=happenPlace1]").on("click",function(){
+                var _this=$(this);
+                weui.picker(labels, {
+                    onConfirm: function (result) {
+                        _this.val(result[0]+result[1]);
+                        _this.change();
+                    }
+                });
+            });
+        }
+        function loadingToast(text){
+            var $loadingToast = $('#loadingToast');
+            $loadingToast.find(".weui-toast__content").text(text);
+            $loadingToast.fadeIn(100);
+        }
+        function closeToast(){
+            $('#loadingToast').fadeOut(100);
+        }
+        $(function(){
+            clearError();
+            wordsCounter();
+            cityPicker();
+            $(".btn-radio").hide();
+            $("#isHide").click(function(){
+                if($(this).is(':checked')){
+                    $(".theinfo").hide();
+                }else{
+                    $(".theinfo").show();
+                }
+            });
+            $("[name=descType]").click(function(){
+                if($("[name=descType]:checked").val()=="0"){
+                    $(".eventDesc").show();
+                    $(".btn-radio").hide();
+                }else{
+                    $(".eventDesc").hide();
+                    $(".btn-radio").show();
+                }
+            });
+            $("#submit").click(function(){
+                if(submiting==1){
+                    return false;
+                }
+                if(check()){
+                    submiting=1;
+                    var imgServerIds = new Array();
+                    $(".img_list .img_div").each(function(){
+                        imgServerIds.push($(this).find("[name=imgServerIds]").val());
+                    });
+                    loadingToast("数据提交中");
+                    $.ajax({
+                        url: "report",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            openId: "[[${fans?.openId}]]",
+                            realName: $("[name=realName]").val(),
+                            mobile: $("[name=mobile]").val(),
+                            isHide: $("#isHide").is(':checked')?1:0,
+                            happenTimeString: $("[name=happenTimeString]").val(),
+                            happenPlace: $("[name=happenPlace1]").val()+$("[name=happenPlace]").val(),
+                            descType: $("[name=descType]:checked").val(),
+                            eventDesc: $("[name=eventDesc]").val(),
+                            voiceServerId: $("#voiceServerId").val(),
+                            imgServerIds:imgServerIds,
+                            descVideo:$("[name=descVideo]").val()
+                        },
+                        traditional: true,
+                        success: function (msg) {
+                            closeToast();
+                            weui.alert("您提交的信息已收到，请持续关注“美丽西湖”微信公众号，并注意红包发放情况！",function(){
+                                if(msg.code==0){
+                                    window.location.href="receive/"+msg.msg+"/0?openId=[[${fans?.openId}]]";
+                                }else{
+                                    window.location.href="reportList?openId=[[${fans?.openId}]]";
+                                }
+                            });
+                        },
+                        error: function(){
+                            weui.alert("提交失败，发生未知错误，请刷新页面后重试。");
+                        }
+                        }
+                    )
+                }
+            });
+            $(".btn_radio").on({
+                touchstart: function(e){
+                    timeOutEvent = setTimeout("longPress()",500);
+                    e.preventDefault();
+                },
+                touchmove: function(){
+                    clearTimeout(timeOutEvent);
+                    timeOutEvent = 0;
+                },
+                touchend: function(){
+                    clearTimeout(timeOutEvent);
+                    if(timeOutEvent!=0){
+                        if($("#voiceLocalId").val()!=""){
+                            if(playStatus==0){
+                                playStatus=1;
+                                wx.playVoice({
+                                    localId: $("#voiceLocalId").val() // 需要播放的音频的本地ID，由stopRecord接口获得
+                                });
+                                $(".btn_radio").html("<i class=\"weui-loading\"></i>播放中...");
+                                wx.onVoicePlayEnd({
+                                    success: function (res) {
+                                        playStatus=0;
+                                        $(".btn_radio").text("点击试听，长按重录");
+                                    }
+                                });
+                            }else{
+                                $(".btn_radio").text("点击试听，长按重录");
+                                wx.stopVoice({
+                                    localId: $("#voiceLocalId").val() // 需要停止的音频的本地ID，由stopRecord接口获得
+                                });
+                                playStatus=0;
+                            }
+                        }
+                    }else{
+                        wx.stopRecord({
+                            success: function (res) {
+                                stopCountDown();
+                                var localId = res.localId;
+                                $("#voiceLocalId").val(localId);
+                                $(".btn_radio").text("点击试听，长按重录");
+                                wx.uploadVoice({
+                                    localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+                                    isShowProgressTips: 1, // 默认为1，显示进度提示
+                                    success: function (res) {
+                                        var serverId = res.serverId; // 返回音频的服务器端ID
+                                        $("#voiceServerId").val(serverId);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    return false;
+                }
+            });
+
+            $(".img_btn").click(function(){
+                wx.chooseImage({
+                    count: 1, // 默认9
+                    sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                    success: function (res) {
+                        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                        for(i=0;i<localIds.length;i++){
+                            doupload(localIds[i]);
+                        }
+                    }
+                });
+            });
+            //预览图片和删除图片
+            var $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
+                $uploaderInput = $("#uploaderInput"),
+                $uploaderFiles = $("#uploaderFiles"),currentImg
+            ;
+            $uploaderFiles.on("click", "li", function(){
+                currentImg=$(this);
+                $galleryImg.attr("style", this.getAttribute("style"));
+                $gallery.fadeIn(100);
+            });
+            $gallery.on("click", function(){
+                $gallery.fadeOut(100);
+            });
+            $(".weui-gallery__del").on("click",function(){
+                currentImg.remove();
+            });
+            //上传视频
+            $("#uploader").fileUpload({
+                url:"upload",
+                file:"file",
+                fileInput:"#uploaderInput",
+                fileSelected:function(files){//选择文件后
+                    if(files.length==0){return false;}
+                    if(files.length>1){
+                        weui.alert("只能上传一个视频");
+                        return false;
+                    }
+                    if(files[0].type.indexOf("video")==-1){
+                        weui.alert("只能上传mp4视频");
+                        return false;
+                    }
+                    if(files[0].size> 100 * 1024 * 1024){
+                        weui.alert("视频大小超过了100M");
+                        return false;
+                    }
+                    return true;
+                },
+                uploadProgress:function(percent){//上传进度
+                    loadingToast(percent+"%");
+                },
+                uploadFailed:function(){
+                    closeToast();
+                    weui.alert("上传失败");
+                },
+                uploadComplete:function(text){//上传成功
+                    var resultMsg=eval("("+text+")");
+                    closeToast();
+                    if(resultMsg.code==0){
+                        $("[name=descVideo]").val("/"+resultMsg.msg);
+                        $("video").attr("src",urlPrefix+"/"+resultMsg.msg);
+                        $("#uploaderVedio").show();
+                    }else{
+                        weui.alert(resultMsg.msg);
+                    }
+                }
+            });
+        })
+        function autoStop(){
+            wx.onVoiceRecordEnd({
+                // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+                complete: function (res) {
+                    stopCountDown();
+                    var localId = res.localId;
+                    $("#voiceLocalId").val(localId);
+                    $(".btn_radio").text("点击试听，长按重录");
+                    wx.uploadVoice({
+                        localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+                        isShowProgressTips: 1, // 默认为1，显示进度提示
+                        success: function (res) {
+                            var serverId = res.serverId; // 返回音频的服务器端ID
+                            $("#voiceServerId").val(serverId);
+                        }
+                    });
+                }
+            });
+        }
+        function longPress(){
+            timeOutEvent = 0;
+            if(playStatus==1){
+                stopCountDown();
+                wx.stopVoice({
+                    localId: $("#voiceLocalId").val() // 需要停止的音频的本地ID，由stopRecord接口获得
+                });
+                playStatus=0;
+            }
+            autoStop();
+            wx.startRecord();
+            startCountDown();
+        }
+        var countDown,leftSec;
+        function startCountDown(){
+            stopCountDown();
+            leftSec=60;
+            countDown=setInterval(function () {
+                leftSec-=1;
+                $(".btn_radio").html("<i class=\"weui-loading\"></i>录音中...剩余"+leftSec+"秒");
+                if(leftSec<=0){
+                    stopCountDown();
+                }
+            },1000);
+        }
+        function stopCountDown(){
+            clearInterval(countDown);
+        }
+
+        var u = navigator.userAgent;
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        function doupload(localId){
+            var tempHtml=$($("#img_clone").html());
+            if(isiOS){
+                wx.getLocalImgData({
+                    localId: localId, // 图片的localID
+                    success: function (res) {
+                        tempHtml.attr("style","background-image:url("+res.localData+")");
+                    }
+                });
+            }else{
+                tempHtml.attr("style","background-image:url("+localId+")");
+            }
+            wx.uploadImage({
+                localId: localId, // 需要上传的图片的本地ID，由chooseImage接口获得
+                isShowProgressTips: 1, // 默认为1，显示进度提示
+                success: function (res) {
+                    tempHtml.find("input").val(res.serverId);
+                    $(".img_list").append(tempHtml);
+                    if($(".img_list").find(".img_div").size()>4){
+                        $(".img-btn").hide();
+                    }
+                }
+            });
+        }
+    </script>
+    <th:block th:replace="~{share_js}"></th:block>
+</th:block>
+</body>
+</html>

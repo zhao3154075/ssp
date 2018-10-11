@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="UserRole">
+
+	<resultMap id="RM_UserRole" type="com.es.ssp.model.UserRole">
+        <result property="urId" column="urId"/>
+        <result property="userId" column="userId"/>
+        <result property="roleId" column="roleId"/>
+	<association property="loginUser" column="urId" fetchType="lazy"
+			 select="LoginUser.getById" />
+	<association property="role" column="roleId" fetchType="lazy"
+			 select="Role.getById" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="UserRole.columns">
+	    <![CDATA[
+		urId,userId,roleId
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="UserRole.insert" useGeneratedKeys="true" keyProperty="urId">
+    <![CDATA[
+        INSERT INTO u_user_role (
+         urId, userId, roleId
+        ) VALUES (
+         #{urId}, #{userId}, #{roleId}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="UserRole.update" >
+    <![CDATA[
+        UPDATE u_user_role SET
+	        userId = #{userId} , roleId = #{roleId}  
+        WHERE 
+        	urId = #{urId}  	        
+    ]]>
+	</update>
+
+    <delete id="UserRole.delete">
+    <![CDATA[
+        DELETE FROM u_user_role WHERE
+        urId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="UserRole.getById" resultMap="RM_UserRole">
+		SELECT <include refid="UserRole.columns" />
+	    <![CDATA[
+		    FROM u_user_role 
+	        WHERE 
+		        urId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="UserRole.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(urId)">
+				AND urId = #{urId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(userId)">
+				AND userId = #{userId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(roleId)">
+				AND roleId = #{roleId}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="UserRole.findPage.count" resultType="long">
+        SELECT count(*) FROM u_user_role 
+		<include refid="UserRole.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="UserRole.findPage" resultMap="RM_UserRole">
+    	SELECT <include refid="UserRole.columns" />
+	    FROM u_user_role 
+		<include refid="UserRole.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+    <select id="UserRole.findByUrId" resultMap="RM_UserRole">
+        SELECT <include refid="UserRole.columns" />
+        FROM u_user_role
+        WHERE urId=#{id}
+    </select>
+
+    <select id="UserRole.findByRoleId" resultMap="RM_UserRole">
+        SELECT <include refid="UserRole.columns" />
+        FROM u_user_role
+        WHERE roleId=#{id}
+    </select>
+
+	<select id="UserRole.findByUserId" resultMap="RM_UserRole">
+		SELECT <include refid="UserRole.columns" />
+		FROM u_user_role
+		WHERE userId=#{userId}
+	</select>
+
+
+    <select id="UserRole.findAll" resultMap="RM_UserRole">
+	    SELECT <include refid="UserRole.columns" />
+		FROM u_user_role
+		<include refid="UserRole.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+	<select id="UserRole.findUserRoles" resultMap="RM_UserRole">
+		SELECT <include refid="UserRole.columns" />
+		<![CDATA[
+		    FROM u_user_role
+	        WHERE
+		        userId = #{userId}
+	    ]]>
+	</select>
+</mapper>
+

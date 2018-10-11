@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="row">
+    <div class="col-sm-5">
+        <div class="dataTables_info">
+            [[${page.thisPageFirstElementNumber}]] -
+            [[${page.thisPageLastElementNumber}]] 共[[${page.totalCount}]]条记录
+            <select th:each="item:${pageSizeSelectList}" onChange="simpleTable.togglePageSize(this.value)" style="width:50px">
+                <option th:value="${item}" th:text="${item}" th:selected="${page.pageSize eq item}"}></option>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers">
+            <ul class="pagination">
+                <li th:if="${page.firstPage}" class="paginate_button disabled">
+                    <a href="javascript:;">«
+                    </a>
+                </li>
+                <li th:unless="${page.firstPage}" class="paginate_button">
+                    <a href="javascript:simpleTable.togglePage(1);">«
+                    </a>
+                </li>
+                <li th:if="${page.hasPreviousPage}" class="paginate_button">
+                    <a th:href="|javascript:simpleTable.togglePage(${page.previousPageNumber});|">‹
+                    </a>
+                </li>
+                <li th:unless="${page.hasPreviousPage}" class="paginate_button disabled">
+                    <a href="javascript:;">‹
+                    </a>
+                </li>
+
+
+                <th:block th:each="item:${page.linkPageNumbers}">
+                    <li th:if="${item eq page.thisPageNumber}" class="paginate_button active">
+                        <a th:text="${item}"></a>
+                    </li>
+                    <li th:unless="${item eq page.thisPageNumber}" class="paginate_button">
+                        <a th:href="|javascript:simpleTable.togglePage(${item});|" th:text="${item}"></a>
+                    </li>
+                </th:block>
+
+                <li th:if="${page.hasNextPage}" class="paginate_button">
+                    <a
+                            th:href="|javascript:simpleTable.togglePage(${page.nextPageNumber});|">›
+                    </a>
+                </li>
+                <li th:unless="${page.hasNextPage}" class="paginate_button disabled">
+                    <a
+                            href="javascript:;">›
+                    </a>
+                </li>
+
+                <li th:if="${page.lastPage}" class="paginate_button disabled">
+                    <a
+                            href="javascript:;">»
+                    </a>
+                </li>
+                <li th:unless="${page.lastPage}" class="paginate_button">
+                    <a
+                            th:href="'javascript:simpleTable.togglePage('+${page.lastPageNumber}+')'">»
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

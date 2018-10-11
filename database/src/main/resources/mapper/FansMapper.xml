@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="Fans">
+
+	<resultMap id="RM_Fans" type="com.es.ssp.model.Fans">
+        <result property="fansId" column="fansId"/>
+        <result property="openId" column="openId"/>
+        <result property="nickName" column="nickName"/>
+        <result property="realName" column="realName"/>
+        <result property="mobile" column="mobile"/>
+        <result property="createTime" column="createTime"/>
+		<result property="headimgurl" column="headimgurl"/>
+		<result property="subscribe" column="subscribe"/>
+	<association property="reports" column="fansId" fetchType="lazy"
+				 select="Report.findByFansId" />
+	<association property="prizeRecords" column="fansId" fetchType="lazy"
+				 select="PrizeRecord.findByFansId" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="Fans.columns">
+	    <![CDATA[
+		fansId,openId,nickName,realName,mobile,createTime,headimgurl,subscribe
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="Fans.insert" useGeneratedKeys="true" keyProperty="fansId">
+    <![CDATA[
+        INSERT INTO fans (
+         fansId, openId, nickName, realName, mobile, createTime,headimgurl,subscribe
+        ) VALUES (
+         #{fansId}, #{openId}, #{nickName}, #{realName}, #{mobile}, #{createTime}, #{headimgurl}, #{subscribe}
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="Fans.update" >
+    <![CDATA[
+        UPDATE fans SET
+	        openId = #{openId} , nickName = #{nickName} , realName = #{realName} , mobile = #{mobile} , createTime = #{createTime} , headimgurl = #{headimgurl} , subscribe = #{subscribe}
+        WHERE 
+        	fansId = #{fansId}  	        
+    ]]>
+	</update>
+
+    <delete id="Fans.delete">
+    <![CDATA[
+        DELETE FROM fans WHERE
+        fansId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="Fans.getById" resultMap="RM_Fans">
+		SELECT <include refid="Fans.columns" />
+	    <![CDATA[
+		    FROM fans 
+	        WHERE 
+		        fansId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="Fans.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(fansId)">
+				AND fansId = #{fansId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(openId)">
+				AND openId = #{openId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(nickName)">
+				AND nickName = #{nickName}
+			</if>
+	       <if test="@Ognl@isNotEmpty(realName)">
+				AND realName = #{realName}
+			</if>
+	       <if test="@Ognl@isNotEmpty(mobile)">
+				AND mobile = #{mobile}
+			</if>
+	       <if test="@Ognl@isNotEmpty(createTime)">
+				AND createTime = #{createTime}
+			</if>
+			<if test="@Ognl@isNotEmpty(headimgurl)">
+				AND headimgurl = #{headimgurl}
+			</if>
+			<if test="@Ognl@isNotEmpty(subscribe)">
+				AND subscribe = #{subscribe}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="Fans.findPage.count" resultType="long">
+        SELECT count(*) FROM fans 
+		<include refid="Fans.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="Fans.findPage" resultMap="RM_Fans">
+    	SELECT <include refid="Fans.columns" />
+	    FROM fans 
+		<include refid="Fans.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="Fans.findAll" resultMap="RM_Fans">
+	    SELECT <include refid="Fans.columns" />
+		FROM fans
+		<include refid="Fans.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+

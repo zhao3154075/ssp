@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="OperateRecord">
+
+	<resultMap id="RM_OperateRecord" type="com.es.ssp.model.OperateRecord">
+        <result property="recordId" column="recordId"/>
+        <result property="reportId" column="reportId"/>
+        <result property="userId" column="userId"/>
+        <result property="createTime" column="createTime"/>
+        <result property="desc" column="desc"/>
+	<association property="report" column="reportId" fetchType="lazy"
+			 select="Report.getById" />
+	<association property="loginUser" column="userId" fetchType="lazy"
+			 select="LoginUser.getById" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="OperateRecord.columns">
+	    <![CDATA[
+		recordId,reportId,userId,createTime,`desc`
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="OperateRecord.insert" useGeneratedKeys="true" keyProperty="recordId">
+    <![CDATA[
+        INSERT INTO operate_record (
+         recordId, reportId, userId, createTime, `desc`
+        ) VALUES (
+         #{recordId}, #{reportId}, #{userId}, #{createTime}, #{desc}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="OperateRecord.update" >
+    <![CDATA[
+        UPDATE operate_record SET
+	        reportId = #{reportId} , userId = #{userId} , createTime = #{createTime} , `desc` = #{desc}
+        WHERE 
+        	recordId = #{recordId}  	        
+    ]]>
+	</update>
+
+    <delete id="OperateRecord.delete">
+    <![CDATA[
+        DELETE FROM operate_record WHERE
+        recordId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="OperateRecord.getById" resultMap="RM_OperateRecord">
+		SELECT <include refid="OperateRecord.columns" />
+	    <![CDATA[
+		    FROM operate_record 
+	        WHERE 
+		        recordId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="OperateRecord.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(recordId)">
+				AND recordId = #{recordId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(reportId)">
+				AND reportId = #{reportId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(userId)">
+				AND userId = #{userId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(createTime)">
+				AND createTime = #{createTime}
+			</if>
+	       <if test="@Ognl@isNotEmpty(desc)">
+				AND `desc` = #{desc}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="OperateRecord.findPage.count" resultType="long">
+        SELECT count(*) FROM operate_record 
+		<include refid="OperateRecord.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="OperateRecord.findPage" resultMap="RM_OperateRecord">
+    	SELECT <include refid="OperateRecord.columns" />
+	    FROM operate_record 
+		<include refid="OperateRecord.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+    <select id="OperateRecord.findByReportId" resultMap="RM_OperateRecord">
+        SELECT <include refid="OperateRecord.columns" />
+        FROM operate_record
+        WHERE reportId=#{id}
+    </select>
+
+    <select id="OperateRecord.findByUserId" resultMap="RM_OperateRecord">
+        SELECT <include refid="OperateRecord.columns" />
+        FROM operate_record
+        WHERE userId=#{userId}
+    </select>
+
+
+    <select id="OperateRecord.findAll" resultMap="RM_OperateRecord">
+	    SELECT <include refid="OperateRecord.columns" />
+		FROM operate_record
+		<include refid="OperateRecord.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+
