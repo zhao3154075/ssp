@@ -54,12 +54,7 @@
                 guanzhu();
                 return false;
                 /*[/]*/
-                if(located!=1){
-                    weui.alert("无法获取当前定位信息");
-                    return false;
-                }
-                if(!inarea){
-                    weui.alert("对不起，不在西湖区范围无法参加");
+                if(!checkLocation()){
                     return false;
                 }
                 /*[# th:if="${fans != null}"]*/

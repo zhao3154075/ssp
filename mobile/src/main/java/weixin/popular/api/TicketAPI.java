@@ -11,10 +11,10 @@ public class TicketAPI extends BaseAPI {
     public TicketAPI() {
     }
 
-    public static Ticket ticketGetticket(String appid) {
+    public static Ticket ticketGetticket(String appid,String secret) {
         Map map=new HashMap();
         map.put("wx_appid", appid);
-        map.put("is_cloud",1);
+        map.put("wx_appsecret",secret);
         JSONObject token= ApiClient.call("wx/index","getJsapiTiket",map);
         Ticket ticket=new Ticket();
         ticket.setTicket(token.getString("jsapi_tiket"));

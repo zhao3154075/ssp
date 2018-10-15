@@ -143,7 +143,7 @@ public class ReportController extends BaseController{
 	
 
 	@RequestMapping(value = "/{id}/chooseType")
-	@RequiresRoles(value = {"admin","secondLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin","secondLevelAdmin"},logical = Logical.OR)
 	@ResponseBody
 	public String chooseType(@PathVariable Long id,Integer reportType,String type){
 		Report report = reportManager.getById(id);
@@ -170,7 +170,7 @@ public class ReportController extends BaseController{
 	}
 
 	@RequestMapping("/getReports")
-	@RequiresRoles(value = {"admin","secondLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin","secondLevelAdmin"},logical = Logical.OR)
 	@ResponseBody
 	public String getReportTypes(Integer[] typeIds,Integer[] reportIds){
 		JSONArray jsonArray = new JSONArray();

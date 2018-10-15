@@ -64,6 +64,40 @@
                                         <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
                                     </div>
                                     <div class="row">
+                                        <div class="col-sm-4 m-b-xs">
+                                            <div class="time_picker">
+                                                <input type="checkbox" class="cbr" name="byReportTime" th:checked="${query.byReportTime}">
+                                                <input name="startReportTimeStr" class="start" type="hidden"
+                                                       th:value="${query.startReportTime}?${#dates.format(query.startReportTime*1000,'yyyy-MM-dd HH:mm')}" />
+                                                <input name="endReportTimeStr" class="end" type="hidden"
+                                                       th:value="${query.endReportTime}?${#dates.format(query.endReportTime*1000,'yyyy-MM-dd HH:mm')}"/>
+                                                <div class="btn-group">
+                                                    <button type="button" id="date-range" class="btn btn-white">
+                                                        <i class="glyphicon glyphicon-calendar"></i>
+                                                        <span class="date-title">[[${query.startReportTime}?${#dates.format(query.startReportTime*1000,'yyyy-MM-dd HH:mm')}]] 至
+                                                    [[${query.endReportTime}?${#dates.format(query.endReportTime*1000,'yyyy-MM-dd HH:mm')}]]</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 m-b-xs">
+                                            <div class="time_picker">
+                                                <input type="checkbox" class="cbr" name="byTime" th:checked="${query.byTime}">
+                                                <input name="startTimeStr" class="start" type="hidden"
+                                                       th:value="${query.startTime}?${#dates.format(query.startTime*1000,'yyyy-MM-dd HH:mm')}" />
+                                                <input name="endTimeStr" class="end" type="hidden"
+                                                       th:value="${query.endTime}?${#dates.format(query.endTime*1000,'yyyy-MM-dd HH:mm')}"/>
+                                                <div class="btn-group">
+                                                    <button type="button" id="date-range" class="btn btn-white">
+                                                        <i class="glyphicon glyphicon-calendar"></i>
+                                                        <span class="date-title">[[${query.startTime}?${#dates.format(query.startTime*1000,'yyyy-MM-dd HH:mm')}]] 至
+                                                    [[${query.endTime}?${#dates.format(query.endTime*1000,'yyyy-MM-dd HH:mm')}]]</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-sm-12">
                                             <div class="table-responsive">
                                                 <table class="table table-striped table-bordered table-hover dataTable">
@@ -95,7 +129,7 @@
                                                     </thead>
                                                     <tbody>
                                                     <tr th:each="item:${page.result}">
-                                                        <td th:text="${#dates.format(item.report.createTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                                        <td th:text="${#dates.format(item.reportTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>
                                                         <td th:text="${item.fans.openId}"></td>
                                                         <td th:text="${item.fans.nickName}"></td>
                                                         <td th:text="${#dates.format(item.createTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>

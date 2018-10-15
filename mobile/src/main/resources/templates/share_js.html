@@ -42,20 +42,16 @@
     var located=-1,inarea=false;
     function checkLocation(){
         if(typeof(locs) != "undefined"){
-            if(located!=1||!inarea){
-                event.stopPropagation();
-                event.preventDefault();
-            }
             if(located==0){
-                alert("正在进行地理位置定位，请稍后再试");
+                weui.alert("正在进行地理位置定位，请稍后再试");
                 return false;
             }
             if(located==-1){
-                alert("请您打开地址理置定位，否则无法参与活动");
+                weui.alert("请您打开地址理置定位，否则无法参与活动");
                 return false;
             }
             if(!inarea){
-                alert("很抱歉！根据定位，您的地理位置不在活动有效范围，请关注活动详情了解活动参与规则");
+                weui.alert("很抱歉！根据定位，您的地理位置不在西湖区范围无法参加");
                 return false;
             }
         }
@@ -200,7 +196,7 @@
     function pushHistory() {
         var state = {
             title: "myCenter",
-            url: "__SELF__"
+            url: "index"
         };
         window.history.pushState(state, state.title, state.url);
     }

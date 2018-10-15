@@ -50,7 +50,7 @@ import static common.util.SpringMVCUtils.toModelMap;
 @RequestMapping("/reporttype")
 public class ReportTypeController extends BaseController{
 	//默认多列排序,example: username desc,createTime asc
-	protected static final String DEFAULT_SORT_COLUMNS = null; 
+	protected static final String DEFAULT_SORT_COLUMNS = null;
 
 	@Autowired
 	private ReportTypeManager reportTypeManager;

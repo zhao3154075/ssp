@@ -312,7 +312,7 @@ function createTimeRangePicker(o){
         o.find('#date-range .date-title').html(start.format('YYYY-MM-DD HH:mm') + ' 至 ' + end.format('YYYY-MM-DD HH:mm'));
         startdate.val(start.format('YYYY-MM-DD HH:mm'));
         enddate.val(end.format('YYYY-MM-DD HH:mm'));
-        $('input[name=byTime]').prop('checked', true).trigger('change');
+        o.find('input[type=checkbox]').prop('checked', true).trigger('change');
     });
 }
 /*
@@ -383,13 +383,13 @@ function initdatepicker() {
             days=$(this).attr("value");
             rangetime(parent,days);
             createTimeRangePicker(parent);
-            $('input[name=byTime]').prop('checked', true).trigger('change');
+            parent.find('input[type=checkbox]').prop('checked', true).trigger('change');
         });
         $(this).find(".earlier a").click(function(){
             days=$(this).attr("value");
             rangebacktime(parent,days);
             createTimeRangePicker(parent);
-            $('input[name=byTime]').prop('checked', true).trigger('change');
+            parent.find('input[type=checkbox]').prop('checked', true).trigger('change');
         });
     });
 }

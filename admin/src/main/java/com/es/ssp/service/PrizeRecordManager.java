@@ -79,23 +79,34 @@ public class PrizeRecordManager {
 		return prizeRecordDao.findPage(query);
 	}
 
+	public void updateReportTime(){
+		List<PrizeRecord> list=prizeRecordDao.findAll();
+		for(PrizeRecord prizeRecord:list){
+			prizeRecord.setReportTime(prizeRecord.getReport().getCreateTime());
+			prizeRecordDao.update(prizeRecord);
+		}
+	}
+
 	public void export(PrizeRecordQuery query, OutputStream out)throws Exception{
-		List<PrizeRecord> list=prizeRecordDao.findAllByPropertys("openId,nickName,status",query.getOpenId(),query.getNickName(),query.getStatus());
+		List<PrizeRecord> list=prizeRecordDao.findAllByPropertys("openId,nickName,status,type,sortColumns,startTime,endTime,byTime,startReportTime,endReportTime,byReportTime"
+				,query.getOpenId(),query.getNickName(),query.getStatus(),query.getType(),query.getSortColumns(),query.getStartTime(),query.getEndTime(),query.isByTime(),query.getStartReportTime(),query.getEndReportTime(),query.isByReportTime());
+
 		WritableWorkbook wwb = Workbook.createWorkbook(out);
 		WritableSheet ws = wwb.createSheet("Sheet 1", 0);
-		String[] heads = new String[]{"openid","微信昵称","发放时间","发放金额","状态","备注"};
+		String[] heads = new String[]{"信息提交时间","openid","微信昵称","发放时间","发放金额","状态","备注"};
 		for (int i = 0; i < heads.length; i++) {
 			ws.addCell(new Label(i, 0, heads[i]));
 		}
 		int row = 0;
 		for (PrizeRecord record:list) {
 			row++;
-			ws.addCell(new Label(0, row, record.getFans().getOpenId()));
-			ws.addCell(new Label(1, row, record.getFans().getNickName()));
-			ws.addCell(new Label(2, row, CommonUtils.format(record.getCreateTime(),"yyyy-MM-dd HH:mm:ss")));
-			ws.addCell(new Label(3, row, record.getAmount()/100+"元"));
-			ws.addCell(new Label(4, row, record.getStatusStr()));
-			ws.addCell(new Label(5, row, record.getErrorInfo()));
+			ws.addCell(new Label(0, row, CommonUtils.format(record.getReportTime(),"yyyy-MM-dd HH:mm:ss")));
+			ws.addCell(new Label(1, row, record.getFans().getOpenId()));
+			ws.addCell(new Label(2, row, record.getFans().getNickName()));
+			ws.addCell(new Label(3, row, CommonUtils.format(record.getCreateTime(),"yyyy-MM-dd HH:mm:ss")));
+			ws.addCell(new Label(4, row, record.getAmount()/100+"元"));
+			ws.addCell(new Label(5, row, record.getStatusStr()));
+			ws.addCell(new Label(6, row, record.getErrorInfo()));
 		}
 		wwb.write();
 		wwb.close();

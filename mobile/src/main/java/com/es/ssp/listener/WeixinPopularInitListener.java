@@ -34,7 +34,7 @@ public class WeixinPopularInitListener implements ServletContextListener{
         TokenManager.init(appID, appSecret,0,6);
         //2.6.1 版本新增方式,5秒延迟执行，间隔119分钟。
         TicketManager.setDaemon(true);
-        TicketManager.init(appID,5,6);
+        TicketManager.init(appID,appSecret,5,6);
     }
 
     @Override

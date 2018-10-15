@@ -48,6 +48,7 @@ public class PrizeRecord  implements Serializable{
      * 红包订单号       db_column: billno 
      */	
 	private String billno;
+	private Long reportTime;
 	//columns END
 
 	public PrizeRecord(){
@@ -131,7 +132,15 @@ public class PrizeRecord  implements Serializable{
 	public String getBillno() {
 		return this.billno;
 	}
-	
+
+	public Long getReportTime() {
+		return reportTime;
+	}
+
+	public void setReportTime(Long reportTime) {
+		this.reportTime = reportTime;
+	}
+
 	private Report report;
 	
 	public void setReport(Report report){

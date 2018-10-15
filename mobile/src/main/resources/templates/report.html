@@ -14,48 +14,46 @@
             user-select: none;
         }
         -->
+        .weui-uploader__bd,.weui-uploader__input-box,.weui-uploader__file{margin-bottom:0;}
     </style>
 </head>
 <body>
 <th:block layout:fragment="content">
     <div class="container" id="container">
         <div class="page js_show">
-            <div class="page__hd">
-                <h1 class="page__title">“随手拍”文明创建信息报送平台</h1>
-            </div>
         <div class="page__bd">
-            <div class="weui-cells__title">基础信息</div>
+            <div class="weui-cells__title">用户信息</div>
             <div class="weui-cells weui-cells_form ">
-                <label class="weui-cell weui-check__label weui-cells_checkbox" for="isHide">
-                    <div class="weui-cell__hd">
-                        <input type="checkbox" class="weui-check" name="isHide" id="isHide"/>
-                        <i class="weui-icon-checked"></i>
+                <div class="weui-cell weui-cell_switch">
+                    <div class="weui-cell__bd">匿名</div>
+                    <div class="weui-cell__ft">
+                        <label for="isHide" class="weui-switch-cp">
+                            <input id="isHide" name="isHide" class="weui-switch-cp__input" type="checkbox"/>
+                            <div class="weui-switch-cp__box"></div>
+                        </label>
                     </div>
-                    <div class="weui-cell__bd">
-                        <p>匿名</p>
-                    </div>
-                </label>
+                </div>
                 <div class="weui-cell theinfo">
                     <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input clear_error_msg" type="text" name="realName" maxlength="4" placeholder="请输入您的姓名" th:readonly="!${#strings.isEmpty(fans?.realName)}" th:value="${fans?.realName}"/>
+                        <input class="weui-input clear_error_msg" type="text" name="realName" maxlength="4" placeholder="请输入您的姓名" th:value="${fans?.realName}"/>
                     </div>
                 </div>
                 <div class="weui-cell theinfo">
                     <div class="weui-cell__hd"><label class="weui-label">联系方式</label></div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input clear_error_msg" name="mobile"  placeholder="请输入您的座机或手机号" th:readonly="!${#strings.isEmpty(fans?.mobile)}" th:value="${fans?.mobile}"/>
-                    </div>
-                </div>
-                <div class="weui-cell">
-                    <div class="weui-cell__hd"><label class="weui-label">发生时间</label></div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input clear_error_msg" type="datetime-local" value="" placeholder="" name="happenTimeString"/>
+                        <input class="weui-input clear_error_msg" name="mobile"  placeholder="请输入您的座机或手机号" th:value="${fans?.mobile}"/>
                     </div>
                 </div>
             </div>
-            <div class="weui-cells__title">发生地点</div>
+            <div class="weui-cells__title">时间地点</div>
             <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">发生时间</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input clear_error_msg" type="datetime-local" placeholder="点击选择时间" name="happenTimeString"/>
+                    </div>
+                </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">杭州市西湖区</label>
@@ -92,9 +90,7 @@
                         <span class="weui-icon-checked"></span>
                     </div>
                 </label>
-            </div>
-            <div class="weui-cells weui-cells_form eventDesc">
-                <div class="weui-cell">
+                <div class="weui-cell eventDesc">
                     <div class="weui-cell__bd">
                         <textarea class="weui-textarea" name="eventDesc" placeholder="请输入描述文字" rows="3"></textarea>
                         <div class="weui-textarea-counter"><span>0</span>/300</div>
@@ -104,23 +100,12 @@
             <div class="weui-btn-area btn-radio">
                 <a href="javascript:;" class="weui-btn weui-btn_plain-primary btn_radio">长按添加录音</a>
             </div>
-            <div class="weui-cells__title">佐证材料</div>
-            <div class="weui-gallery" id="gallery">
-                <span class="weui-gallery__img" id="galleryImg"></span>
-                <div class="weui-gallery__opr">
-                    <a href="javascript:" class="weui-gallery__del">
-                        <i class="weui-icon-delete weui-icon_gallery-delete"></i>
-                    </a>
-                </div>
-            </div>
+            <div class="weui-cells__title">图片上传</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
                         <div class="weui-uploader">
-                            <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">图片上传</p>
-                            </div>
-                            <div class="weui-uploader__bd">
+                            <div class="weui-uploader__bd" style="overflow: visible">
                                 <ul class="weui-uploader__files img_list" id="uploaderFiles">
                                 </ul>
                                 <div class="weui-uploader__input-box img-btn">
@@ -131,23 +116,33 @@
                     </div>
                 </div>
             </div>
+            <div class="weui-cells__title">视频上传</div>
             <div class="weui-cells weui-cells_form" id="uploader">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
                         <div class="weui-uploader">
-                            <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">视频上传</p>
-                            </div>
-                            <div class="weui-uploader__bd">
+                            <div class="weui-uploader__bd" style="overflow: visible">
                                 <ul class="weui-uploader__files" id="uploaderVedio" style="display: none">
-                                    <li class="weui-uploader__file img_div"><video style="width: 100%;height: 100%;" controls preload="auto"></video><input type="hidden" name="descVideo"></li>
+                                    <li class="weui-uploader__file img_div" style="position:relative">
+                                        <video style="width: 100%;height: 100%;" controls preload="auto"></video>
+                                        <input type="hidden" name="descVideo">
+                                        <span class="weui-badge delete-video" style="position: absolute;top: -.4em;right: -.4em;">×</span>
+                                    </li>
                                 </ul>
-                                <div class="weui-uploader__input-box">
+                                <div class="weui-uploader__input-box video-upload-btn">
                                     <input id="uploaderInput" class="weui-uploader__input" type="file" name="file" multiple/>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="weui-gallery" id="gallery">
+                <span class="weui-gallery__img" id="galleryImg"></span>
+                <div class="weui-gallery__opr">
+                    <a href="javascript:" class="weui-gallery__del">
+                        <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+                    </a>
                 </div>
             </div>
             <div class="weui-btn-area">
@@ -167,7 +162,7 @@
     <input type="hidden" id="voiceLocalId">
     <input type="hidden" id="voiceServerId" name="voiceServerId">
     <div id="img_clone" style="display:none">
-        <li class="weui-uploader__file img_div"><input type="hidden" name="imgServerIds"></li>
+        <li class="weui-uploader__file img_div"><span class="weui-badge delete-img" style="position: relative;top: -1.1em;right: -5.8em;">×</span><input type="hidden" name="imgServerIds"></li>
     </div>
     <script th:src="|${urlPrefix}/scripts/positions.js|"></script>
     <script th:src="|${urlPrefix}/scripts/upload.js|"></script>
@@ -186,6 +181,20 @@
                 return true;
             }
         }
+        function getFormat(){
+            var format = "";
+            var nTime = new Date();
+            format += nTime.getFullYear()+"-";
+            format += (nTime.getMonth()+1)<10?"0"+(nTime.getMonth()+1):(nTime.getMonth()+1);
+            format += "-";
+            format += nTime.getDate()<10?"0"+(nTime.getDate()):(nTime.getDate());
+            format += "T";
+            format += nTime.getHours()<10?"0"+(nTime.getHours()):(nTime.getHours());
+            format += ":";
+            format += nTime.getMinutes()<10?"0"+(nTime.getMinutes()):(nTime.getMinutes());
+            format += ":00";
+            return format;
+        }
         // 判断是否为电话号码
         var isTelAvailable=function (tel) {
             var myreg = /^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/;
@@ -196,12 +205,7 @@
             }
         }
         function check(){
-            if(located!=1){
-                weui.alert("无法获取当前定位信息");
-                return false;
-            }
-            if(!inarea){
-                weui.alert("对不起，不在西湖区范围无法参加");
+            if(!checkLocation()){
                 return false;
             }
             errorMsg="";
@@ -224,6 +228,10 @@
                 showError($("[name=happenTimeString]"));
                 result=false;
                 errorMsg+="请输入发生时间<br/>";
+            }
+            if($("[name=happenPlace]").val()==""){
+                result=false;
+                errorMsg+="请完善具体地址<br/>";
             }
             if($("[name=happenPlace]").val().length>50){
                 result=false;
@@ -299,6 +307,7 @@
             $('#loadingToast').fadeOut(100);
         }
         $(function(){
+            $("[name=happenTimeString]").val(getFormat());
             clearError();
             wordsCounter();
             cityPicker();
@@ -434,20 +443,8 @@
                 });
             });
             //预览图片和删除图片
-            var $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
-                $uploaderInput = $("#uploaderInput"),
-                $uploaderFiles = $("#uploaderFiles"),currentImg
-            ;
-            $uploaderFiles.on("click", "li", function(){
-                currentImg=$(this);
-                $galleryImg.attr("style", this.getAttribute("style"));
-                $gallery.fadeIn(100);
-            });
-            $gallery.on("click", function(){
-                $gallery.fadeOut(100);
-            });
-            $(".weui-gallery__del").on("click",function(){
-                currentImg.remove();
+            $("#uploaderFiles").on("click",".delete-img",function(){
+                $(this).parent().remove();
             });
             //上传视频
             $("#uploader").fileUpload({
@@ -484,12 +481,19 @@
                         $("[name=descVideo]").val("/"+resultMsg.msg);
                         $("video").attr("src",urlPrefix+"/"+resultMsg.msg);
                         $("#uploaderVedio").show();
+                        $(".video-upload-btn").hide();
                     }else{
                         weui.alert(resultMsg.msg);
                     }
                 }
             });
-        })
+            $(".delete-video").click(function(){
+                $("[name=descVideo]").val("");
+                $("#uploaderVedio").hide();
+                $("#uploaderInput").val("");
+                $(".video-upload-btn").show();
+            });
+        });
         function autoStop(){
             wx.onVoiceRecordEnd({
                 // 录音时间超过一分钟没有停止的时候会执行 complete 回调

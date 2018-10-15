@@ -17,6 +17,7 @@
         <result property="amount" column="amount"/>
         <result property="errorInfo" column="errorInfo"/>
         <result property="billno" column="billno"/>
+		<result property="reportTime" column="reportTime"/>
 	<association property="report" column="reportId" fetchType="lazy"
 			 select="Report.getById" />
 	<association property="fans" column="fansId" fetchType="lazy"
@@ -26,7 +27,7 @@
 	<!-- 用于select查询公用抽取的列 -->
 	<sql id="PrizeRecord.columns">
 	    <![CDATA[
-		recordId,t.fansId,t.createTime,t.status,reportId,type,amount,errorInfo,billno
+		recordId,t.fansId,t.createTime,t.status,reportId,type,amount,errorInfo,billno,reportTime
 	    ]]>
 	</sql>
 
@@ -34,9 +35,9 @@
 	<insert id="PrizeRecord.insert" useGeneratedKeys="true" keyProperty="recordId">
     <![CDATA[
         INSERT INTO prize_record (
-         recordId, fansId, createTime, status, reportId, type, amount, errorInfo, billno
+         recordId, fansId, createTime, status, reportId, type, amount, errorInfo, billno,reportTime
         ) VALUES (
-         #{recordId}, #{fansId}, #{createTime}, #{status}, #{reportId}, #{type}, #{amount}, #{errorInfo}, #{billno}        
+         #{recordId}, #{fansId}, #{createTime}, #{status}, #{reportId}, #{type}, #{amount}, #{errorInfo}, #{billno},#{reportTime}
         )
     ]]>
 		<!--	
@@ -51,7 +52,7 @@
 	<update id="PrizeRecord.update" >
     <![CDATA[
         UPDATE prize_record SET
-	        fansId = #{fansId} , createTime = #{createTime} , status = #{status} , reportId = #{reportId} , type = #{type} , amount = #{amount} , errorInfo = #{errorInfo} , billno = #{billno}  
+	        fansId = #{fansId} , createTime = #{createTime} , status = #{status} , reportId = #{reportId} , type = #{type} , amount = #{amount} , errorInfo = #{errorInfo} , billno = #{billno} ,reportTime=#{reportTime}
         WHERE 
         	recordId = #{recordId}  	        
     ]]>
@@ -108,6 +109,22 @@
 			</if>
 			<if test="@Ognl@isNotEmpty(nickName)">
 				AND t1.nickName LIKE CONCAT('%',#{nickName},'%')
+			</if>
+			<if test="@Ognl@isNotEmpty(byTime) and byTime ==true">
+				<if test="@Ognl@isNotEmpty(startTime)">
+					AND t.createTime >= #{startTime}
+				</if>
+				<if test="@Ognl@isNotEmpty(endTime)">
+					AND #{endTime} >= t.createTime
+				</if>
+			</if>
+			<if test="@Ognl@isNotEmpty(byReportTime) and byReportTime ==true">
+				<if test="@Ognl@isNotEmpty(startReportTime)">
+					AND t.reportTime >= #{startReportTime}
+				</if>
+				<if test="@Ognl@isNotEmpty(endTime)">
+					AND #{endReportTime} >= t.reportTime
+				</if>
 			</if>
 		</where>
 	</sql>

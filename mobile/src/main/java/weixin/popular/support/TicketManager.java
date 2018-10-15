@@ -49,19 +49,19 @@ public class TicketManager {
         daemon = daemon;
     }
 
-    public static void init(String appid) {
-        init(appid, 0, 7140);
+    public static void init(String appid,String secret) {
+        init(appid,secret, 0, 7140);
     }
 
-    public static void init(String appid, String types) {
-        init(appid, 0, 7140, types);
+    public static void init(String appid,String secret, String types) {
+        init(appid,secret, 0, 7140, types);
     }
 
-    public static void init(String appid, int initialDelay, int delay) {
-        init(appid, initialDelay, delay, "jsapi");
+    public static void init(String appid,String secret, int initialDelay, int delay) {
+        init(appid,secret, initialDelay, delay, "jsapi");
     }
 
-    public static void init(final String appid, int initialDelay, int delay, String... types) {
+    public static void init(final String appid,final String secret, int initialDelay, int delay, String... types) {
         if (firestAppid == null) {
             firestAppid = appid;
         }
@@ -81,12 +81,12 @@ public class TicketManager {
             }
 
             if (initialDelay == 0) {
-                doRun(appid, type, key);
+                doRun(appid,secret, type, key);
             }
 
             ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
                 public void run() {
-                    TicketManager.doRun(appid, type, key);
+                    TicketManager.doRun(appid,secret, type, key);
                 }
             }, initialDelay == 0 ? (long)delay : (long)initialDelay, (long)delay, TimeUnit.SECONDS);
             futureMap.put(key, scheduledFuture);
@@ -94,9 +94,9 @@ public class TicketManager {
 
     }
 
-    private static void doRun(String appid, String type, String key) {
+    private static void doRun(String appid,String secret, String type, String key) {
         try {
-            Ticket ticket = TicketAPI.ticketGetticket(appid);
+            Ticket ticket = TicketAPI.ticketGetticket(appid,secret);
             ticketMap.put(key, ticket.getTicket());
             logger.info("TICKET refurbish with appid:{} type:{}", appid, type);
         } catch (Exception var5) {

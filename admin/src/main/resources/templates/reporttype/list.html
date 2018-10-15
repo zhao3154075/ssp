@@ -85,7 +85,7 @@
                                                     <td th:if="${not #strings.isEmpty(query.parentId)}" th:text="${item.amount/100+'元'}"></td>
                                                     <td th:text="${#dates.format(item.createTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>
                                                     <td>
-                                                        <a th:href="|reporttype?parentId=${item.typeId}|" class="btn-white btn btn-xs">查看子分类</a>
+                                                        <a th:href="|reporttype?parentId=${item.typeId}|" th:if="${item.parentId==null}" class="btn-white btn btn-xs">查看子分类</a>
                                                         <a shiro:hasAnyRoles="admin" th:href="|reporttype/${item.typeId}/edit|" class="btn-white btn btn-xs">修改</a>
                                                     </td>
                                                 </tr>

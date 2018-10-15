@@ -172,6 +172,7 @@ public class IndexController extends BaseController{
                         }else{
                             Long dayTotalCount=prizeRecordManager.getDayTotalCount(fans.getFansId(),type);
                             if(dayTotalCount>=globalSetting.getDayLimit()){
+                                setAttribute("dayLimit",globalSetting.getDayLimit());
                                 return "day_limit";
                             }
                             report.setPrizeStatus1(2);
@@ -185,6 +186,7 @@ public class IndexController extends BaseController{
                             prizeRecord.setReportId(report.getReportId());
                             prizeRecord.setType(type);
                             prizeRecord.setStatus(0);
+                            prizeRecord.setReportTime(report.getCreateTime());
                             prizeRecordManager.save(prizeRecord);
                             redpackManager.sendRedpack(prizeRecord.getRecordId());
                             reportRecordManager.statistics(fans.getFansId());
@@ -203,6 +205,7 @@ public class IndexController extends BaseController{
                             }else{
                                 Long dayTotalCount=prizeRecordManager.getDayTotalCount(fans.getFansId(),type);
                                 if(dayTotalCount>=globalSetting.getDayLimit()){
+                                    setAttribute("dayLimit",globalSetting.getDayLimit());
                                     return "day_limit";
                                 }
                                 report.setPrizeStatus2(2);
@@ -216,6 +219,7 @@ public class IndexController extends BaseController{
                                 prizeRecord.setReportId(report.getReportId());
                                 prizeRecord.setType(type);
                                 prizeRecord.setStatus(0);
+                                prizeRecord.setReportTime(report.getCreateTime());
                                 prizeRecordManager.save(prizeRecord);
                                 redpackManager.sendRedpack(prizeRecord.getRecordId());
                                 reportRecordManager.statistics(fans.getFansId());

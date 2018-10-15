@@ -96,6 +96,12 @@ public class PrizeRecordController extends BaseController{
 		return "prizerecord/list";
 	}
 
+	@RequestMapping("/updateReportTime")
+	public String updateReportTime(){
+		prizeRecordManager.updateReportTime();
+		return "redirect:prizerecord";
+	}
+
 
 	/** 补发 */
 	@ResumeList
