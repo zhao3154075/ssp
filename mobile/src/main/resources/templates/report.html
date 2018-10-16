@@ -137,14 +137,25 @@
                     </div>
                 </div>
             </div>
-            <div class="weui-gallery" id="gallery">
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_vcode">
+                    <div class="weui-cell__hd"><label class="weui-label">验证码</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="vrifyCode" placeholder="请输入验证码"/>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <img class="weui-vcode-img" src="getKaptcha" />
+                    </div>
+                </div>
+            </div>
+            <!--<div class="weui-gallery" id="gallery">
                 <span class="weui-gallery__img" id="galleryImg"></span>
                 <div class="weui-gallery__opr">
                     <a href="javascript:" class="weui-gallery__del">
                         <i class="weui-icon-delete weui-icon_gallery-delete"></i>
                     </a>
                 </div>
-            </div>
+            </div>-->
             <div class="weui-btn-area">
                 <a class="weui-btn weui-btn_primary submit_btn" href="javascript:" id="submit">提交</a>
             </div>
@@ -259,6 +270,10 @@
                 result=false;
                 errorMsg+="最多上传5张图片<br/>";
             }
+            if($("[name=vrifyCode]").val()==""){
+                result=false;
+                errorMsg+="请输入验证码<br/>";
+            }
             if(errorMsg!=""){
                 weui.alert(errorMsg);
             }
@@ -354,18 +369,26 @@
                             eventDesc: $("[name=eventDesc]").val(),
                             voiceServerId: $("#voiceServerId").val(),
                             imgServerIds:imgServerIds,
+                            vrifyCode:$("[name=vrifyCode]").val(),
                             descVideo:$("[name=descVideo]").val()
                         },
                         traditional: true,
                         success: function (msg) {
                             closeToast();
-                            weui.alert("您提交的信息已收到，请持续关注“美丽西湖”微信公众号，并注意红包发放情况！",function(){
-                                if(msg.code==0){
-                                    window.location.href="receive/"+msg.msg+"/0?openId=[[${fans?.openId}]]";
-                                }else{
-                                    window.location.href="reportList?openId=[[${fans?.openId}]]";
-                                }
-                            });
+                            if(msg.code==-2){
+                                submiting=0;
+                                $(".weui-vcode-img").attr("src","getKaptcha?v="+new Date().getTime());
+                                $("[name=vrifyCode]").val("");
+                                weui.alert("验证码错误");
+                            }else{
+                                weui.alert("您提交的信息已收到，请持续关注“美丽西湖”微信公众号，并注意红包发放情况！",function(){
+                                    if(msg.code==0){
+                                        window.location.href="receive/"+msg.msg+"/0?openId=[[${fans?.openId}]]";
+                                    }else if(msg.code==1){
+                                        window.location.href="reportList?openId=[[${fans?.openId}]]";
+                                    }
+                                });
+                            }
                         },
                         error: function(){
                             weui.alert("提交失败，发生未知错误，请刷新页面后重试。");
@@ -373,6 +396,9 @@
                         }
                     )
                 }
+            });
+            $(".weui-vcode-img").click(function(){
+                $(this).attr("src","getKaptcha?v="+new Date().getTime());
             });
             $(".btn_radio").on({
                 touchstart: function(e){

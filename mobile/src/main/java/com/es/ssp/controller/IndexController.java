@@ -106,6 +106,10 @@ public class IndexController extends BaseController{
             return "report";
         }else if(method.equals("POST")){
             if(fans!=null){
+                String vrifyCode=getParam("vrifyCode");
+                if(!getSessionAttr("vrifyCode").equals(vrifyCode)){
+                    return "forward:/message?code=-2&msg=invalid vrifyCode";
+                }
                 Report report=new Report();
                 report.setCreateTime(System.currentTimeMillis()/1000);
                 report.setEventDesc(getParam("eventDesc"));
