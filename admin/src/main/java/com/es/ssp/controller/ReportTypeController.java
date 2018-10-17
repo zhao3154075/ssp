@@ -75,7 +75,7 @@ public class ReportTypeController extends BaseController{
 	@RequiresRoles(value = {"admin"},logical = Logical.OR)
 	public String index(ModelMap model,ReportTypeQuery query,HttpServletRequest request) {
 		model.addAttribute("parents",reportTypeManager.getParents());
-		setDefaultSortColumns(query,DEFAULT_SORT_COLUMNS);
+		setDefaultSortColumns(query,"typeName");
 		Page page = reportTypeManager.findPage(query);
 		model.addAllAttributes(toModelMap(page, query));
 		return "reporttype/list";
@@ -146,7 +146,7 @@ public class ReportTypeController extends BaseController{
 	@RequestMapping(value = "/list")
 	@RequiresRoles(value = {"admin","firstLevelAdmin","secondLevelAdmin"},logical = Logical.OR)
 	public String list(ModelMap model,ReportTypeQuery query){
-		setDefaultSortColumns(query,DEFAULT_SORT_COLUMNS);
+		setDefaultSortColumns(query,"typeDesc");
         query.setChildren("true");
 		Page page = reportTypeManager.findPage(query);
 		model.addAllAttributes(toModelMap(page, query));

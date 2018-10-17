@@ -113,8 +113,10 @@
     	SELECT <include refid="ReportType.columns" />
 	    FROM report_type 
 		<include refid="ReportType.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY convert(${sortColumns} using gbk) ASC
+		</if>
 
-		ORDER BY convert(typeName using gbk) ASC
 		LIMIT #{offset},#{limit}
     </select>
 
@@ -124,9 +126,7 @@
 	    SELECT <include refid="ReportType.columns" />
 		FROM report_type
 		<include refid="ReportType.findPage.where"/>
-		<if test="@Ognl@isNotEmpty(sortColumns)">
-			ORDER BY ${sortColumns}
-		</if>
+		ORDER BY convert(typeName using gbk) ASC
 		<if test="@Ognl@isNotEmpty(limit)">
 			LIMIT #{limit}
 		</if>
