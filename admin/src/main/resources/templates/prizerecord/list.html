@@ -64,7 +64,10 @@
                                         <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-4 m-b-xs">
+                                        <div class="col-sm-1 control-label" style="line-height: 30px;width: 110px;margin: 0px;padding-right: 0px;">
+                                            信息提交时间：
+                                        </div>
+                                        <div>
                                             <div class="time_picker">
                                                 <input type="checkbox" class="cbr" name="byReportTime" th:checked="${query.byReportTime}">
                                                 <input name="startReportTimeStr" class="start" type="hidden"
@@ -80,7 +83,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4 m-b-xs">
+                                        <div class="col-sm-1 control-label" style="line-height: 30px;width: 110px;margin: 0px;padding-right: 0px;">
+                                            发放时间：
+                                        </div>
+                                        <div>
                                             <div class="time_picker">
                                                 <input type="checkbox" class="cbr" name="byTime" th:checked="${query.byTime}">
                                                 <input name="startTimeStr" class="start" type="hidden"
