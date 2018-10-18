@@ -11,9 +11,9 @@ public class ReportRecordManager {
 
     /**
      * 发起粉丝统计
-     * @param fansId
+     * @param reportId
      */
-    public void statistics(Integer fansId){
-        rabbitTemplate.convertAndSend("reportStatistics",fansId);
+    public void reportStatistics(Long reportId){
+        rabbitTemplate.convertAndSend("reportStatistics",reportId);
     }
 }

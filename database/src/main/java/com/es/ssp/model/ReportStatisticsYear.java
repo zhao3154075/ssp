@@ -27,10 +27,6 @@ public class ReportStatisticsYear  implements Serializable{
      * totalAmount       db_column: totalAmount 
      */	
 	private Integer totalAmount;
-    /**
-     * year       db_column: year 
-     */	
-	private Integer year;
 	//columns END
 
 	public ReportStatisticsYear(){
@@ -62,13 +58,6 @@ public class ReportStatisticsYear  implements Serializable{
 	
 	public Integer getTotalAmount() {
 		return this.totalAmount;
-	}
-	public void setYear(Integer value) {
-		this.year = value;
-	}
-	
-	public Integer getYear() {
-		return this.year;
 	}
 
 	public String toString() {

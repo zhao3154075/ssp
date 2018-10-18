@@ -4,6 +4,7 @@ import cn.org.rapid_framework.page.Page;
 import com.es.ssp.dao.ReportDao;
 import com.es.ssp.model.Report;
 import com.es.ssp.query.ReportQuery;
+import common.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,13 +65,17 @@ public class ReportManager {
 		return reportDao.findPage(query);
 	}
 
-	public Integer getTotalReport(Integer fansId){
-		Long result= reportDao.count("fansId",fansId);
+	public Integer getYearTotalReport(Integer fansId,int year){
+        long startTime= DateUtils.getBeginDayOfYear(year).getTime()/1000;
+        long endTime=DateUtils.getEndDayOfYear(year).getTime()/1000;
+		Long result= reportDao.count("fansId,startTime,endTime",fansId,startTime,endTime);
 		return result==null?0:result.intValue();
 	}
 
-	public List<Map> getTotalStatus(Integer fansId){
-		return reportDao.selectList("Report.totalStatusCount","fansId",fansId);
+	public List<Map> getYearTotalStatus(Integer fansId,int year){
+		long startTime= DateUtils.getBeginDayOfYear(year).getTime()/1000;
+		long endTime=DateUtils.getEndDayOfYear(year).getTime()/1000;
+		return reportDao.selectList("Report.totalStatusCount","fansId,startTime,endTime",fansId,startTime,endTime);
 	}
     
 }

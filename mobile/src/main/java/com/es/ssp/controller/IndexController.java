@@ -147,7 +147,7 @@ public class IndexController extends BaseController{
                     report.setPrizeStatus1(1);
                 }
                 reportManager.save(report);
-                reportRecordManager.statistics(fans.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 fans.setRealName(getParam("realName"));
                 fans.setMobile(getParam("mobile"));
                 fansManager.update(fans);
@@ -193,7 +193,7 @@ public class IndexController extends BaseController{
                             prizeRecord.setReportTime(report.getCreateTime());
                             prizeRecordManager.save(prizeRecord);
                             redpackManager.sendRedpack(prizeRecord.getRecordId());
-                            reportRecordManager.statistics(fans.getFansId());
+                            reportRecordManager.reportStatistics(report.getReportId());
                         }
 
                     }
@@ -226,7 +226,7 @@ public class IndexController extends BaseController{
                                 prizeRecord.setReportTime(report.getCreateTime());
                                 prizeRecordManager.save(prizeRecord);
                                 redpackManager.sendRedpack(prizeRecord.getRecordId());
-                                reportRecordManager.statistics(fans.getFansId());
+                                reportRecordManager.reportStatistics(report.getReportId());
                             }
                         }
                     }

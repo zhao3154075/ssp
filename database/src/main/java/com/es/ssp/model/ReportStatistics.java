@@ -52,6 +52,8 @@ public class ReportStatistics  implements Serializable{
      * fansId       db_column: fansId 
      */	
 	private Integer fansId;
+	private Integer year;
+	private Long updateTime;
 	//columns END
 
 	public ReportStatistics(){
@@ -151,7 +153,23 @@ public class ReportStatistics  implements Serializable{
 	public Integer getFansId() {
 		return this.fansId;
 	}
-	
+
+	public Integer getYear() {
+		return year;
+	}
+
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+
+	public Long getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Long updateTime) {
+		this.updateTime = updateTime;
+	}
+
 	private Fans fans;
 	
 	public void setFans(Fans fans){

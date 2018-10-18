@@ -207,7 +207,7 @@ public class ReportController extends BaseController{
 				report.setStatus(1);
 				//report = setPrizeStatus(report);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[0]修改为[1]");
 			}
 		}
@@ -229,7 +229,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 1){
 				report.setStatus(0);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[1]修改为[0]");
 			}
 		}
@@ -251,7 +251,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 0){
 				report.setStatus(2);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[0]修改为[2]");
 			}
 		}
@@ -273,7 +273,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 2){
 				report.setStatus(0);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[2]修改为[0]");
 			}
 		}
@@ -296,7 +296,7 @@ public class ReportController extends BaseController{
 				report.setStatus(3);
 				//report = setPrizeStatus(report);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[1]修改为[3]");
 			}
 		}
@@ -318,7 +318,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 3){
 				report.setStatus(1);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[3]修改为[1]");
 			}
 		}
@@ -340,7 +340,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 1){
 				report.setStatus(4);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[1]修改为[4]");
 			}
 		}
@@ -362,7 +362,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 4){
 				report.setStatus(1);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[4]修改为[1]");
 			}
 		}
@@ -384,7 +384,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 3){
 				report.setStatus(5);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[3]修改为[5]");
 			}
 		}
@@ -406,7 +406,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 5){
 				report.setStatus(3);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[5]修改为[3]");
 			}
 		}
@@ -429,7 +429,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 3){
 				report.setStatus(6);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[3]修改为[6]");
 			}
 		}
@@ -451,7 +451,7 @@ public class ReportController extends BaseController{
 			if (report.getStatus() == 6){
 				report.setStatus(3);
 				reportManager.update(report);
-                reportRecordManager.statistics(report.getFansId());
+                reportRecordManager.reportStatistics(report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[6]修改为[3]");
 			}
 		}
@@ -472,7 +472,7 @@ public class ReportController extends BaseController{
 		if (report != null && report.getStatus()==5){
 			report.setStatus(7);
 			reportManager.update(report);
-            reportRecordManager.statistics(report.getFansId());
+            reportRecordManager.reportStatistics(report.getReportId());
             operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[5]修改为[7]");
 		}
 		return "";
@@ -492,7 +492,7 @@ public class ReportController extends BaseController{
 		if (report != null && report.getStatus()==7){
 			report.setStatus(5);
 			reportManager.update(report);
-            reportRecordManager.statistics(report.getFansId());
+            reportRecordManager.reportStatistics(report.getReportId());
             operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[7]修改为[5]");
 		}
 		return "";

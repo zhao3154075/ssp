@@ -59,7 +59,7 @@
                                         <div class="col-sm-2">
                                             <select name="year" class="form-control">
                                                 <th:block th:each="item:${years}">
-                                                <option th:value="${item}">[[${item}]]年度</option>
+                                                <option th:value="${item}" th:selected="${item eq query.year}">[[${item}]]年度</option>
                                                 </th:block>
                                             </select>
                                         </div>

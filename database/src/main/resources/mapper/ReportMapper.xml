@@ -145,6 +145,12 @@
 			<if test="@Ognl@isNotEmpty(isHide)">
 				AND isHide = #{isHide}
 			</if>
+			<if test="@Ognl@isNotEmpty(startTime)">
+				AND createTime >= #{startTime}
+			</if>
+			<if test="@Ognl@isNotEmpty(endTime)">
+				AND #{endTime} >= createTime
+			</if>
 		</where>
 	</sql>
 
@@ -309,6 +315,12 @@
 		SELECT status,count(*) as total FROM report
 		WHERE
 		fansId=#{fansId}
+		<if test="@Ognl@isNotEmpty(startTime)">
+			AND createTime >= #{startTime}
+		</if>
+		<if test="@Ognl@isNotEmpty(endTime)">
+			AND #{endTime} >= createTime
+		</if>
 		GROUP BY status
 	</select>
 

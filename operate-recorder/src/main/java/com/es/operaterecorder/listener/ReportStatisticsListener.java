@@ -4,6 +4,7 @@ import com.es.operaterecorder.service.PrizeRecordManager;
 import com.es.operaterecorder.service.ReportManager;
 import com.es.operaterecorder.service.ReportStatisticsManager;
 import com.es.operaterecorder.service.ReportStatisticsYearManager;
+import com.es.ssp.model.Report;
 import com.es.ssp.model.ReportStatistics;
 import com.es.ssp.model.ReportStatisticsYear;
 import common.util.DateUtils;
@@ -27,15 +28,22 @@ public class ReportStatisticsListener {
     @Autowired
     private ReportStatisticsYearManager reportStatisticsYearManager;
     @RabbitHandler
-    public void process(Integer fansId){
+    public void process(Long reportId){
         int method=0;
-        ReportStatistics reportStatistics=reportStatisticsManager.getByFansId(fansId);
+        Report report=reportManager.getById(reportId);
+        if(report==null){
+            return;
+        }
+        Integer fansId=report.getFansId();
+        int year=DateUtils.getNowYear(report.getCreateTime()*1000);
+        ReportStatistics reportStatistics=reportStatisticsManager.getByFansId(fansId,year);
         if(reportStatistics==null){
             reportStatistics=new ReportStatistics();
             reportStatistics.setFansId(fansId);
+            reportStatistics.setYear(DateUtils.getNowYear());
             method=1;
         }
-        reportStatistics.setTotalReport(reportManager.getTotalReport(fansId));
+        reportStatistics.setTotalReport(reportManager.getYearTotalReport(fansId,year));
         reportStatistics.setTotalStatus1(0);
         reportStatistics.setTotalStatus2(0);
         reportStatistics.setTotalStatus3(0);
@@ -44,7 +52,8 @@ public class ReportStatisticsListener {
         reportStatistics.setTotalStatus6(0);
         reportStatistics.setTotalStatus7(0);
         reportStatistics.setTotalStatus8(0);
-        List<Map> status=reportManager.getTotalStatus(fansId);
+        reportStatistics.setUpdateTime(System.currentTimeMillis()/1000);
+        List<Map> status=reportManager.getYearTotalStatus(fansId,year);
         if(status!=null){
             for(Map item:status){
                 if(item.get("status").equals(0)){
@@ -73,7 +82,7 @@ public class ReportStatisticsListener {
                 }
             }
         }
-        reportStatistics.setTotalAmount(prizeRecordManager.getTotalAmount(fansId));
+        reportStatistics.setTotalAmount(prizeRecordManager.getThisYearAmount(fansId,year));
         if(method==1){
             reportStatisticsManager.save(reportStatistics);
         }else{
@@ -84,10 +93,9 @@ public class ReportStatisticsListener {
         if(reportStatisticsYear==null){
             reportStatisticsYear=new ReportStatisticsYear();
             reportStatisticsYear.setFansId(fansId);
-            reportStatisticsYear.setYear(DateUtils.getNowYear());
             method=1;
         }
-        reportStatisticsYear.setTotalAmount(prizeRecordManager.getThisYearAmount(fansId));
+        reportStatisticsYear.setTotalAmount(prizeRecordManager.getTotalAmount(fansId));
         if(method==1){
             reportStatisticsYearManager.save(reportStatisticsYear);
         }else{

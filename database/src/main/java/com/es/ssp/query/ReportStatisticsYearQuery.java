@@ -23,8 +23,6 @@ public class ReportStatisticsYearQuery extends PageRequest implements Serializab
 	private Integer fansId;
 	/** totalAmount */
 	private Integer totalAmount;
-	/** year */
-	private Integer year;
 
 	public Integer getRecordId() {
 		return this.recordId;
@@ -50,15 +48,6 @@ public class ReportStatisticsYearQuery extends PageRequest implements Serializab
 		this.totalAmount = value;
 	}
 	
-	public Integer getYear() {
-		return this.year;
-	}
-	
-	public void setYear(Integer value) {
-		this.year = value;
-	}
-	
-
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this,ToStringStyle.MULTI_LINE_STYLE);
 	}

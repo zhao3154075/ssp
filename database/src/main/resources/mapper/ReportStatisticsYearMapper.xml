@@ -11,13 +11,12 @@
         <result property="recordId" column="recordId"/>
         <result property="fansId" column="fansId"/>
         <result property="totalAmount" column="totalAmount"/>
-        <result property="year" column="year"/>
 	</resultMap>
 	
 	<!-- 用于select查询公用抽取的列 -->
 	<sql id="ReportStatisticsYear.columns">
 	    <![CDATA[
-		recordId,fansId,totalAmount,year
+		recordId,fansId,totalAmount
 	    ]]>
 	</sql>
 
@@ -25,9 +24,9 @@
 	<insert id="ReportStatisticsYear.insert" useGeneratedKeys="true" keyProperty="recordId">
     <![CDATA[
         INSERT INTO report_statistics_year (
-         recordId, fansId, totalAmount, year
+         recordId, fansId, totalAmount
         ) VALUES (
-         #{recordId}, #{fansId}, #{totalAmount}, #{year}        
+         #{recordId}, #{fansId}, #{totalAmount}
         )
     ]]>
 		<!--	
@@ -42,7 +41,7 @@
 	<update id="ReportStatisticsYear.update" >
     <![CDATA[
         UPDATE report_statistics_year SET
-	        fansId = #{fansId} , totalAmount = #{totalAmount} , year = #{year}  
+	        fansId = #{fansId} , totalAmount = #{totalAmount}
         WHERE 
         	recordId = #{recordId}  	        
     ]]>
@@ -75,9 +74,6 @@
 			</if>
 	       <if test="@Ognl@isNotEmpty(totalAmount)">
 				AND totalAmount = #{totalAmount}
-			</if>
-	       <if test="@Ognl@isNotEmpty(year)">
-				AND year = #{year}
 			</if>
 		</where>
 	</sql>

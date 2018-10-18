@@ -179,7 +179,7 @@
     <script th:src="|${urlPrefix}/scripts/upload.js|"></script>
     <script>
         var backUrl='index?openId=[[${fans?.openId}]]';
-        var locs="西湖";
+        //var locs="西湖";
         var playStatus=0;
         var timeOutEvent=0;
         var submiting=0;
@@ -384,7 +384,7 @@
                                 weui.alert("您提交的信息已收到，请持续关注“美丽西湖”微信公众号，并注意红包发放情况！",function(){
                                     if(msg.code==0){
                                         window.location.href="receive/"+msg.msg+"/0?openId=[[${fans?.openId}]]";
-                                    }else if(msg.code==1){
+                                    }else{
                                         window.location.href="reportList?openId=[[${fans?.openId}]]";
                                     }
                                 });

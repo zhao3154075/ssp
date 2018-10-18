@@ -38,6 +38,7 @@ public class ReportStatisticsQuery extends PageRequest implements Serializable {
 	private String realName;
 	private String mobile;
 	private Integer year;
+	private Long updateTime;
 
 	public Integer getRecordId() {
 		return this.recordId;
@@ -141,6 +142,14 @@ public class ReportStatisticsQuery extends PageRequest implements Serializable {
 
 	public void setYear(Integer year) {
 		this.year = year;
+	}
+
+	public Long getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Long updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	public String toString() {

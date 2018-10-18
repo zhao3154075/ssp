@@ -51,12 +51,10 @@ import com.es.ssp.query.*;
 @RequestMapping("/reportstatistics")
 public class ReportStatisticsController extends BaseController{
 	//默认多列排序,example: username desc,createTime asc
-	protected static final String DEFAULT_SORT_COLUMNS = null; 
+	protected static final String DEFAULT_SORT_COLUMNS = "updateTime desc";
 
 	@Autowired
 	private ReportStatisticsManager reportStatisticsManager;
-	
-	private final String LIST_ACTION = "redirect:/reportstatistics";
 	
 	/** binder用于bean属性的设置 */
 	@InitBinder  
@@ -87,8 +85,6 @@ public class ReportStatisticsController extends BaseController{
 		setDefaultSortColumns(query,DEFAULT_SORT_COLUMNS);
 		Page page = this.reportStatisticsManager.findPage(query);
 		model.addAllAttributes(toModelMap(page, query));
-
-
 		return "reportstatistics/list";
 	}
 

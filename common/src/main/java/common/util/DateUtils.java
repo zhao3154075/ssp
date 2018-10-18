@@ -811,6 +811,12 @@ public class DateUtils {
 		         return new Timestamp(calendar.getTimeInMillis());
 		     }
 
+	public static Integer getNowYear(long time) {
+		Date date = new Date(time);
+		GregorianCalendar gc = (GregorianCalendar) Calendar.getInstance();
+		gc.setTime(date);
+		return Integer.valueOf(gc.get(1));
+	}
 	public static Integer getNowYear() {
 		              Date date = new Date();
 		             GregorianCalendar gc = (GregorianCalendar) Calendar.getInstance();
@@ -818,22 +824,30 @@ public class DateUtils {
 		             return Integer.valueOf(gc.get(1));
 		         }
 	//获取本年的开始时间
-       public static java.util.Date getBeginDayOfYear() {
-		             Calendar cal = Calendar.getInstance();
-		            cal.set(Calendar.YEAR, getNowYear());
-		             // cal.set
-		             cal.set(Calendar.MONTH, Calendar.JANUARY);
-		             cal.set(Calendar.DATE, 1);
+	public static java.util.Date getBeginDayOfYear(int year) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, year);
+		// cal.set
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.DATE, 1);
 
-		             return getDayStartTime(cal.getTime());
+		return getDayStartTime(cal.getTime());
+	}
+	//获取本年的结束时间
+	public static java.util.Date getEndDayOfYear(int year) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, Calendar.DECEMBER);
+		cal.set(Calendar.DATE, 31);
+		return getDayEndTime(cal.getTime());
+	}
+	//获取本年的开始时间
+       public static java.util.Date getBeginDayOfYear() {
+		             return getBeginDayOfYear(getNowYear());
 		         }
       //获取本年的结束时间
 		      public static java.util.Date getEndDayOfYear() {
-		             Calendar cal = Calendar.getInstance();
-		             cal.set(Calendar.YEAR, getNowYear());
-		            cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		             cal.set(Calendar.DATE, 31);
-		             return getDayEndTime(cal.getTime());
+		             return getEndDayOfYear(getNowYear());
 		         }
 	public static void main(String[] args) {
 		System.out.println(getTimesmorning(1));

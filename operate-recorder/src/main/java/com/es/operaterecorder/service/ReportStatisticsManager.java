@@ -4,6 +4,7 @@ import cn.org.rapid_framework.page.Page;
 import com.es.ssp.dao.ReportStatisticsDao;
 import com.es.ssp.model.ReportStatistics;
 import com.es.ssp.query.ReportStatisticsQuery;
+import common.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,8 +64,8 @@ public class ReportStatisticsManager {
 		return reportStatisticsDao.findPage(query);
 	}
 
-	public ReportStatistics getByFansId(Integer fansId){
-		List<ReportStatistics> list=reportStatisticsDao.selectList("ReportStatistics.findByFansId","id",fansId);
+	public ReportStatistics getByFansId(Integer fansId,int year){
+		List<ReportStatistics> list=reportStatisticsDao.selectList("ReportStatistics.findByFansId","id,year",fansId, year);
 		if(list!=null){
 			for(ReportStatistics result:list){
 				return result;

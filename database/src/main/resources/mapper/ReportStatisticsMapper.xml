@@ -19,13 +19,15 @@
 		<result property="totalStatus7" column="totalStatus7"/>
 		<result property="totalStatus8" column="totalStatus8"/>
         <result property="totalAmount" column="totalAmount"/>
+		<result property="year" column="year"/>
+		<result property="updateTime" column="updateTime"/>
         <result property="fansId" column="fansId"/>
 	</resultMap>
 	
 	<!-- 用于select查询公用抽取的列 -->
 	<sql id="ReportStatistics.columns">
 	    <![CDATA[
-		recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,fansId
+		recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,fansId,`year`,updateTime
 	    ]]>
 	</sql>
 
@@ -33,9 +35,9 @@
 	<insert id="ReportStatistics.insert" useGeneratedKeys="true" keyProperty="recordId">
     <![CDATA[
         INSERT INTO report_statistics (
-         recordId, totalReport, totalStatus1, totalStatus2, totalStatus3, totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8, totalAmount, fansId
+         recordId, totalReport, totalStatus1, totalStatus2, totalStatus3, totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8, totalAmount, fansId,`year`,updateTime
         ) VALUES (
-         #{recordId}, #{totalReport}, #{totalStatus1}, #{totalStatus2}, #{totalStatus3}, #{totalStatus4}, #{totalStatus5}, #{totalStatus6}, #{totalStatus7}, #{totalStatus8}, #{totalAmount}, #{fansId}
+         #{recordId}, #{totalReport}, #{totalStatus1}, #{totalStatus2}, #{totalStatus3}, #{totalStatus4}, #{totalStatus5}, #{totalStatus6}, #{totalStatus7}, #{totalStatus8}, #{totalAmount}, #{fansId},#{year},#{updateTime}
         )
     ]]>
 		<!--	
@@ -50,7 +52,7 @@
 	<update id="ReportStatistics.update" >
     <![CDATA[
         UPDATE report_statistics SET
-	        totalReport = #{totalReport} , totalStatus1 = #{totalStatus1} , totalStatus2 = #{totalStatus2} , totalStatus3 = #{totalStatus3} , totalStatus4 = #{totalStatus4}, totalStatus5 = #{totalStatus5} , totalStatus6 = #{totalStatus6} , totalStatus7 = #{totalStatus7} , totalStatus8 = #{totalStatus8} , totalAmount = #{totalAmount} , fansId = #{fansId}
+	        totalReport = #{totalReport} , totalStatus1 = #{totalStatus1} , totalStatus2 = #{totalStatus2} , totalStatus3 = #{totalStatus3} , totalStatus4 = #{totalStatus4}, totalStatus5 = #{totalStatus5} , totalStatus6 = #{totalStatus6} , totalStatus7 = #{totalStatus7} , totalStatus8 = #{totalStatus8} , totalAmount = #{totalAmount} , fansId = #{fansId},updateTime=#{updateTime}
         WHERE 
         	recordId = #{recordId}  	        
     ]]>
@@ -91,17 +93,17 @@
     <select id="ReportStatistics.findByFansId" resultMap="RM_ReportStatistics">
         SELECT <include refid="ReportStatistics.columns" />
         FROM report_statistics
-        WHERE fansId=#{id}
+        WHERE fansId=#{id} AND year = #{year}
     </select>
 
 
     <select id="ReportStatistics.findAll" resultType="Map">
-		SELECT openId,nickName,realName,mobile,recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,totalAmountYear
+		SELECT openId,updateTime,nickName,realName,mobile,recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,totalAmountYear
 		FROM
-		(SELECT t.recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t.totalAmount,t.fansId,t1.totalAmount AS totalAmountYear
-		FROM report_statistics t LEFT JOIN report_statistics_year t1
+		(SELECT t.recordId,t.updateTime,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t1.totalAmount,t.fansId,t.totalAmount AS totalAmountYear
+		FROM report_statistics t JOIN report_statistics_year t1
 		ON t.fansId=t1.fansId
-		WHERE t1.year=#{year}) t2 LEFT JOIN fans t3 ON t2.fansId=t3.fansId
+		WHERE t.year=#{year}) t2 JOIN fans t3 ON t2.fansId=t3.fansId
 		<include refid="ReportStatistics.findPage.where"/>
 		<if test="@Ognl@isNotEmpty(sortColumns)">
 			ORDER BY ${sortColumns}
@@ -109,12 +111,12 @@
 	</select>
 
 	<select id="ReportStatistics.findPage" resultType="Map">
-        SELECT openId,nickName,realName,mobile,recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,totalAmountYear
+        SELECT openId,updateTime,nickName,realName,mobile,recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,totalAmount,totalAmountYear
 		FROM
-		(SELECT t.recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t.totalAmount,t.fansId,t1.totalAmount AS totalAmountYear
-		FROM report_statistics t LEFT JOIN report_statistics_year t1
+		(SELECT t.recordId,t.updateTime,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t1.totalAmount,t.fansId,t.totalAmount AS totalAmountYear
+		FROM report_statistics t JOIN report_statistics_year t1
 		ON t.fansId=t1.fansId
-		WHERE t1.year=#{year}) t2 LEFT JOIN fans t3 ON t2.fansId=t3.fansId
+		WHERE t.year=#{year}) t2 JOIN fans t3 ON t2.fansId=t3.fansId
 		<include refid="ReportStatistics.findPage.where"/>
 		<if test="@Ognl@isNotEmpty(sortColumns)">
 			ORDER BY ${sortColumns}
@@ -123,10 +125,10 @@
 	</select>
 	<select id="ReportStatistics.findPage.count" resultType="long">
 		SELECT count(*) FROM
-		(SELECT t.recordId,totalReport,totalStatus1,totalStatus2,totalStatus3,totalStatus4,totalStatus5,totalStatus6,totalStatus7,totalStatus8,t.totalAmount,t.fansId,t1.totalAmount AS totalAmountYear
-		FROM report_statistics t LEFT JOIN report_statistics_year t1
+		(SELECT t.fansId
+		FROM report_statistics t JOIN report_statistics_year t1
 		ON t.fansId=t1.fansId
-		WHERE t1.year=#{year}) t2 LEFT JOIN fans t3 ON t2.fansId=t3.fansId
+		WHERE t.year=#{year}) t2 JOIN fans t3 ON t2.fansId=t3.fansId
 		<include refid="ReportStatistics.findPage.where"/>
 	</select>
 </mapper>

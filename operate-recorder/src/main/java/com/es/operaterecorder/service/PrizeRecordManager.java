@@ -71,9 +71,9 @@ public class PrizeRecordManager {
 		return result==null?0:result.intValue();
 	}
 
-	public Integer getThisYearAmount(Integer fansId){
-		long startTime=DateUtils.getBeginDayOfYear().getTime()/1000;
-		long endTime=DateUtils.getEndDayOfYear().getTime()/1000;
+	public Integer getThisYearAmount(Integer fansId,int year){
+		long startTime=DateUtils.getBeginDayOfYear(year).getTime()/1000;
+		long endTime=DateUtils.getEndDayOfYear(year).getTime()/1000;
 		Long result= prizeRecordDao.selectOne("PrizeRecord.getTotalAmount","fansId,startTime,endTime",fansId,startTime,endTime);
 		return result==null?0:result.intValue();
 	}
