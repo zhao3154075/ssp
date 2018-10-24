@@ -45,13 +45,9 @@
                                 <form action="prizerecord" name="queryForm" id="queryForm">
                                     <input type="hidden" name="type" th:value="${query.type}"/>
                                     <div class="row">
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-12">
                                             <input type="text" name="openId" th:value="${query.openId}" placeholder="openId搜索" class="input-sm form-control">
-                                        </div>
-                                        <div class="col-sm-2">
                                             <input type="text" name="nickName" th:value="${query.nickName}" placeholder="微信昵称搜索" class="input-sm form-control">
-                                        </div>
-                                        <div class="col-sm-2">
                                             <select name="status" class="form-control">
                                                 <option value="">状态搜索</option>
                                                 <option value="-1" th:selected="${query.status eq -1}">发送失败</option>
@@ -59,9 +55,9 @@
                                                 <option value="1" th:selected="${query.status eq 1}">发送成功</option>
                                                 <option value="2" th:selected="${query.status eq 2}">发送中</option>
                                             </select>
+                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
+                                            <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
                                         </div>
-                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
-                                        <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-1 control-label" style="line-height: 30px;width: 110px;margin: 0px;padding-right: 0px;">

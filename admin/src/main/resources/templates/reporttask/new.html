@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base_form}">
+<body>
+<th:block layout:fragment="form_title">
+    <li>
+        <a>志愿者数据管理</a>
+    </li>
+    <li>
+        <a href="reporttask">志愿者数据列表</a>
+    </li>
+    <li class="active">
+        <strong>添加数据</strong>
+    </li>
+</th:block>
+<th:block layout:fragment="form_content">
+    <form method="post" action="reporttask" class="form-horizontal form-wizard form validate">
+        <th:block th:replace="~{reporttask/form_include}"></th:block>
+    </form>
+</th:block>
+</body>
+</html>

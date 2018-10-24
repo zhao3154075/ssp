@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <script type="text/javascript" th:src="|${urlPrefix}/scripts/simpletable/simpletable.js|"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function () {
+            // 分页需要依赖的初始化动作
+            window.simpleTable = new SimpleTable('queryForm', [[${page.thisPageNumber}]], [[${page.pageSize}]], [[${query.sortColumns}]], "pageNumber");
+            new AddressSelector("[name=town]","[name=community]");
+            $(".more-btn").click(function(){
+                var _temp=$(this).parent().next();
+                if(_temp.css("display")=="none"){
+                    $(this).text("收起");
+                    _temp.show();
+                }else{
+                    $(this).text("更多");
+                    _temp.hide();
+                }
+            });
+            $("#export").click(function () {
+                $("#queryForm").attr("action","townstatistics/export");
+                $("#queryForm").submit();
+                $("#queryForm").attr("action","townstatistics");
+            });
+        });
+    </script>
+    <style>.more-btn{float:right;}</style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div id="wrapper" class="gray-bg" style="padding:0 15px;">
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-lg-10">
+                <h2></h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a>志愿者数据管理</a>
+                    </li>
+                    <li class="active">
+                        <strong>镇街数据统计</strong>
+                    </li>
+                </ol>
+                </h3>
+            </div>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools">
+                                <a href="javascript:document.location.reload();">
+                                    <i class="fa fa-rotate-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                <form action="townstatistics" name="queryForm" id="queryForm">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <select class="form-control" name="town" th:defaultValue="${query.town}">
+                                            </select>
+                                            <select class="form-control" style="display: none" name="community">
+                                            </select>
+                                            <select name="year" class="form-control">
+                                                <th:block th:each="item:${years}">
+                                                    <option th:value="${item}" th:selected="${item eq query.year}">[[${item}]]年度</option>
+                                                </th:block>
+                                            </select>
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
+                                            <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-bordered table-hover dataTable">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>
+                                                            镇街名称
+                                                        </th>
+                                                        <th sortColumn="totalVolunteer">志愿者数量</th>
+                                                        <th>各月完成数</th>
+                                                        <th sortColumn="totalNum">年度完成数</th>
+                                                        <th sortColumn="totalRate">年度完成率</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="item:${page.result}">
+                                                        <td th:text="${item.town}"></td>
+                                                        <td th:text="${item.totalVolunteer}"></td>
+                                                        <td>
+                                                            <div><label>1月：</label>[[${item.month1}]]<a class="btn btn-xs more-btn">更多</a></div>
+                                                            <div style="display: none;">
+                                                                <label>2月：</label>[[${item.month2}]]<br/>
+                                                                <label>3月：</label>[[${item.month3}]]<br/>
+                                                                <label>4月：</label>[[${item.month4}]]<br/>
+                                                                <label>5月：</label>[[${item.month5}]]<br/>
+                                                                <label>6月：</label>[[${item.month6}]]<br/>
+                                                                <label>7月：</label>[[${item.month7}]]<br/>
+                                                                <label>8月：</label>[[${item.month8}]]<br/>
+                                                                <label>9月：</label>[[${item.month9}]]<br/>
+                                                                <label>10月：</label>[[${item.month10}]]<br/>
+                                                                <label>11月：</label>[[${item.month11}]]<br/>
+                                                                <label>12月：</label>[[${item.month12}]]<br/>
+                                                            </div>
+                                                        </td>
+                                                        <td th:text="${item.totalNum}"></td>
+                                                        <td th:text="${#numbers.formatDecimal(item.totalRate, 1, 1)+'%'}"></td>
+                                                    </tr>
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <th:block th:replace="~{page_tool_bar}"></th:block>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

@@ -215,3 +215,27 @@ var labels = [{
         value: "下杨村"
     }, {label: "铜鉴湖村", value: "铜鉴湖村"}, {label: "湖埠村", value: "湖埠村"}, {label: "双灵村", value: "双灵村"}]
 }];
+var AddressSelector=function(select1,select2){
+    var selt1=$(select1),selt2=$(select2),defaultIndex=0;
+    selt1.html("<option value=''>请选择镇街</option>");
+    for(var i in labels){
+        selt1.append("<option value='"+labels[i].value+"'>"+labels[i].value+"</option>");
+        if(selt1.attr("defaultValue")==labels[i].value){
+            defaultIndex=i;
+        }
+    }
+    selt2.html("<option value=''>请选择村社</option>");
+    for(var i in labels[defaultIndex].children){
+        selt2.append("<option value='"+labels[defaultIndex].children[i].value+"'>"+labels[defaultIndex].children[i].value+"</option>");
+    }
+    selt1.change(function(){
+        selt2.html("<option value=''>请选择村社</option>");
+        for(var i in labels){
+            if($(this).val()==labels[i].value){
+                for(var j in labels[i].children){
+                    selt2.append("<option value='"+labels[i].children[j].value+"'>"+labels[i].children[j].value+"</option>");
+                }
+            }
+        }
+    });
+}

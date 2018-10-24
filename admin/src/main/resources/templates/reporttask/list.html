@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" xmlns:shiro="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorate="~{base}">
 <head>
     <script type="text/javascript" th:src="|${urlPrefix}/scripts/simpletable/simpletable.js|"></script>
@@ -8,6 +8,7 @@
         $(document).ready(function () {
             // 分页需要依赖的初始化动作
             window.simpleTable = new SimpleTable('queryForm', [[${page.thisPageNumber}]], [[${page.pageSize}]], [[${query.sortColumns}]], "pageNumber");
+            new AddressSelector("[name=town]","[name=community]");
         });
     </script>
 </head>
@@ -19,10 +20,10 @@
                 <h2></h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a>奖励标准</a>
+                        <a>志愿者数据管理</a>
                     </li>
                     <li class="active">
-                        <strong>分类列表</strong>
+                        <strong>志愿者数据列表</strong>
                     </li>
                 </ol>
                 </h3>
@@ -42,15 +43,15 @@
                         </div>
                         <div class="ibox-content">
                             <div class="dataTables_wrapper form-inline dt-bootstrap">
-                                <form action="reporttype" name="queryForm" id="queryForm">
+                                <form action="" name="queryForm" id="queryForm">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <input type="text" name="typeName" th:value="${query.typeName}" placeholder="请填写分类名称" class="input-sm form-control">
-                                        <select name="parentId" class="form-control">
-                                            <option value="">选择父分类</option>
-                                            <option th:each="item:${parents}" th:value="${item.typeId}" th:selected="${item.typeId eq query.parentId}">
-                                                [[${item.typeName}]]
-                                            </option>
+                                        <input type="text" name="realName" th:value="${query.realName}" placeholder="请填写姓名" class="input-sm form-control">
+                                        <input type="text" name="mobile" th:value="${query.mobile}" placeholder="请填写联系方式" class="input-sm form-control">
+                                        <input type="text" name="workUnit" th:value="${query.workUnit}" placeholder="请填写工作单位职务" class="input-sm form-control">
+                                        <select class="form-control" name="town" th:defaultValue="${query.town}">
+                                        </select>
+                                        <select class="form-control" name="community" th:defaultValue="${query.community}">
                                         </select>
                                         <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
                                     </div>
@@ -62,31 +63,43 @@
                                                 <thead>
                                                 <tr>
                                                     <th>
-                                                        分类名称
+                                                        姓名
                                                     </th>
-                                                    <th>分类描述</th>
-                                                    <th th:if="${not #strings.isEmpty(query.parentId)}">
-                                                        奖励金额
+                                                    <th>联系电话</th>
+                                                    <th>
+                                                        工作单位职务
+                                                    </th>
+                                                    <th>所属镇街</th>
+                                                    <th>
+                                                        所属村社
+                                                    </th>
+                                                    <th>
+                                                        月任务数量
                                                     </th>
                                                     <th sortColumn="createTime">
-                                                        创建时间
+                                                        录入时间
                                                     </th>
-                                                    <th shiro:hasAnyRoles="admin,firstLevelAdmin">
+                                                    <th>
                                                         操作
                                                     </th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:each="item:${page.result}">
-                                                    <td th:text="${item.typeName}"></td>
-                                                    <td th:text="${item.typeDesc}"></td>
-                                                    <td th:if="${not #strings.isEmpty(query.parentId)}" th:text="${item.amount/100+'元'}"></td>
+                                                <th:block th:each="item:${page.result}">
+                                                <tr th:if="${not #strings.equals(item.taskId,param.d)}">
+                                                    <td th:text="${item.realName}"></td>
+                                                    <td th:text="${item.mobile}"></td>
+                                                    <td th:text="${item.workUnit}"></td>
+                                                    <td th:text="${item.town}"></td>
+                                                    <td th:text="${item.community}"></td>
+                                                    <td th:text="${item.taskNum}"></td>
                                                     <td th:text="${#dates.format(item.createTime*1000,'yyyy-MM-dd HH:mm:ss')}"></td>
                                                     <td>
-                                                        <a th:href="|reporttype?parentId=${item.typeId}|" th:if="${item.parentId==null}" class="btn-white btn btn-xs">查看子分类</a>
-                                                        <a shiro:hasAnyRoles="admin" th:href="|reporttype/${item.typeId}/edit|" class="btn-white btn btn-xs">修改</a>
+                                                        <a th:href="|reporttask/${item.taskId}/edit|" class="btn-white btn btn-xs">修改</a>
+                                                        <a th:href="|reporttask/${item.taskId}/delete|" class="btn-white btn btn-xs confirm">删除</a>
                                                     </td>
                                                 </tr>
+                                                </th:block>
                                                 </tbody>
 
                                             </table>
@@ -103,6 +116,13 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).keydown(function(e) {
+            if (e.keyCode == 13) {
+                $("#queryForm").submit();
+            }
+        });
+    </script>
 </th:block>
 </body>
 </html>

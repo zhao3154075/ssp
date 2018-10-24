@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="TownStatistics">
+
+	<resultMap id="RM_TownStatistics" type="com.es.ssp.model.TownStatistics">
+        <result property="recordId" column="recordId"/>
+        <result property="town" column="town"/>
+        <result property="totalVolunteer" column="totalVolunteer"/>
+        <result property="month1" column="month1"/>
+        <result property="month2" column="month2"/>
+        <result property="month3" column="month3"/>
+        <result property="month4" column="month4"/>
+        <result property="month5" column="month5"/>
+        <result property="month6" column="month6"/>
+        <result property="month7" column="month7"/>
+        <result property="month8" column="month8"/>
+        <result property="month9" column="month9"/>
+        <result property="month10" column="month10"/>
+        <result property="month11" column="month11"/>
+        <result property="month12" column="month12"/>
+        <result property="totalNum" column="totalNum"/>
+        <result property="year" column="year"/>
+        <result property="totalRate" column="totalRate"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="TownStatistics.columns">
+	    <![CDATA[
+		recordId,town,totalVolunteer,month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12,totalNum,year,totalRate
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="TownStatistics.insert" useGeneratedKeys="true" keyProperty="recordId">
+    <![CDATA[
+        INSERT INTO town_statistics (
+         recordId, town, totalVolunteer, month1, month2, month3, month4, month5, month6, month7, month8, month9, month10, month11, month12, totalNum, year, totalRate
+        ) VALUES (
+         #{recordId}, #{town}, #{totalVolunteer}, #{month1}, #{month2}, #{month3}, #{month4}, #{month5}, #{month6}, #{month7}, #{month8}, #{month9}, #{month10}, #{month11}, #{month12}, #{totalNum}, #{year}, #{totalRate}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="TownStatistics.update" >
+    <![CDATA[
+        UPDATE town_statistics SET
+	        town = #{town} , totalVolunteer = #{totalVolunteer} , month1 = #{month1} , month2 = #{month2} , month3 = #{month3} , month4 = #{month4} , month5 = #{month5} , month6 = #{month6} , month7 = #{month7} , month8 = #{month8} , month9 = #{month9} , month10 = #{month10} , month11 = #{month11} , month12 = #{month12} , totalNum = #{totalNum} , year = #{year} , totalRate = #{totalRate}  
+        WHERE 
+        	recordId = #{recordId}  	        
+    ]]>
+	</update>
+
+    <delete id="TownStatistics.delete">
+    <![CDATA[
+        DELETE FROM town_statistics WHERE
+        recordId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="TownStatistics.getById" resultMap="RM_TownStatistics">
+		SELECT <include refid="TownStatistics.columns" />
+	    <![CDATA[
+		    FROM town_statistics 
+	        WHERE 
+		        recordId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="TownStatistics.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(recordId)">
+				AND recordId = #{recordId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(town)">
+				AND town = #{town}
+			</if>
+	       <if test="@Ognl@isNotEmpty(totalVolunteer)">
+				AND totalVolunteer = #{totalVolunteer}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month1)">
+				AND month1 = #{month1}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month2)">
+				AND month2 = #{month2}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month3)">
+				AND month3 = #{month3}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month4)">
+				AND month4 = #{month4}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month5)">
+				AND month5 = #{month5}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month6)">
+				AND month6 = #{month6}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month7)">
+				AND month7 = #{month7}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month8)">
+				AND month8 = #{month8}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month9)">
+				AND month9 = #{month9}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month10)">
+				AND month10 = #{month10}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month11)">
+				AND month11 = #{month11}
+			</if>
+	       <if test="@Ognl@isNotEmpty(month12)">
+				AND month12 = #{month12}
+			</if>
+	       <if test="@Ognl@isNotEmpty(totalNum)">
+				AND totalNum = #{totalNum}
+			</if>
+	       <if test="@Ognl@isNotEmpty(year)">
+				AND year = #{year}
+			</if>
+	       <if test="@Ognl@isNotEmpty(totalRate)">
+				AND totalRate = #{totalRate}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="TownStatistics.findPage.count" resultType="long">
+        SELECT count(*) FROM town_statistics 
+		<include refid="TownStatistics.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="TownStatistics.findPage" resultMap="RM_TownStatistics">
+    	SELECT <include refid="TownStatistics.columns" />
+	    FROM town_statistics 
+		<include refid="TownStatistics.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="TownStatistics.findAll" resultMap="RM_TownStatistics">
+	    SELECT <include refid="TownStatistics.columns" />
+		FROM town_statistics
+		<include refid="TownStatistics.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+

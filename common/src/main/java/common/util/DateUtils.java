@@ -811,6 +811,12 @@ public class DateUtils {
 		         return new Timestamp(calendar.getTimeInMillis());
 		     }
 
+		     public static Integer getNowMonth(long time){
+				 Date date = new Date(time);
+				 GregorianCalendar gc = (GregorianCalendar) Calendar.getInstance();
+				 gc.setTime(date);
+				 return gc.get(Calendar.MONTH)+1;
+			 }
 	public static Integer getNowYear(long time) {
 		Date date = new Date(time);
 		GregorianCalendar gc = (GregorianCalendar) Calendar.getInstance();
@@ -850,6 +856,9 @@ public class DateUtils {
 		             return getEndDayOfYear(getNowYear());
 		         }
 	public static void main(String[] args) {
-		System.out.println(getTimesmorning(1));
+		Date date = new Date();
+		GregorianCalendar gc = (GregorianCalendar) Calendar.getInstance();
+		gc.setTime(date);
+		System.out.println(gc.get(Calendar.MONTH)+1);
 	}
 }

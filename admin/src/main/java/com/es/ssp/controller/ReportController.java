@@ -35,17 +35,6 @@ import static common.util.SpringMVCUtils.toModelMap;
 
 
 /**
- * 标准的rest方法列表
- * <pre>
- * /report                => index()  
- * /report/new            => _new()  注意: 不使用/userinfo/add => add()的原因是ad会被一些浏览器当做广告URL拦截
- * /report/{id}           => show()  
- * /report/{id}/edit      => edit()  
- * /report        POST    => create()  
- * /report/{id}   PUT     => update()  
- * /report/{id}   DELETE  => delete()  
- * /report        DELETE  => batchDelete()  
- * </pre>
  * @author pettyzhao email:515280634(a)qq.com
  * @version 1.0
  * @since 1.0
@@ -67,6 +56,8 @@ public class ReportController extends BaseController{
 	private GlobalSettingManager globalSettingManager;
 	@Autowired
 	private ReportRecordManager reportRecordManager;
+	@Autowired
+	private ReportTaskManager reportTaskManager;
 	
 	private final String LIST_ACTION = "redirect:/report";
 	
@@ -208,6 +199,7 @@ public class ReportController extends BaseController{
 				//report = setPrizeStatus(report);
 				reportManager.update(report);
                 reportRecordManager.reportStatistics(report.getReportId());
+				reportTaskManager.statistics(2,report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[0]修改为[1]");
 			}
 		}
@@ -230,6 +222,7 @@ public class ReportController extends BaseController{
 				report.setStatus(0);
 				reportManager.update(report);
                 reportRecordManager.reportStatistics(report.getReportId());
+				reportTaskManager.statistics(2,report.getReportId());
                 operateRecordManager.create((Integer) getSessionAttr("userId"),id,"状态由[1]修改为[0]");
 			}
 		}

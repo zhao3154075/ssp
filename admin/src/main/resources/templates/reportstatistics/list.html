@@ -44,27 +44,19 @@
                             <div class="dataTables_wrapper form-inline dt-bootstrap">
                                 <form action="reportstatistics" name="queryForm" id="queryForm">
                                     <div class="row">
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-12">
                                             <input type="text" name="openId" th:value="${query.openId}" placeholder="openId搜索" class="input-sm form-control">
-                                        </div>
-                                        <div class="col-sm-2">
                                             <input type="text" name="nickName" th:value="${query.nickName}" placeholder="微信昵称搜索" class="input-sm form-control">
-                                        </div>
-                                        <div class="col-sm-2">
                                             <input type="text" name="realName" th:value="${query.realName}" placeholder="姓名搜索" class="input-sm form-control">
-                                        </div>
-                                        <div class="col-sm-2">
                                             <input type="text" name="mobile" th:value="${query.mobile}" placeholder="电话搜索" class="input-sm form-control">
-                                        </div>
-                                        <div class="col-sm-2">
                                             <select name="year" class="form-control">
                                                 <th:block th:each="item:${years}">
                                                 <option th:value="${item}" th:selected="${item eq query.year}">[[${item}]]年度</option>
                                                 </th:block>
                                             </select>
+                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
+                                            <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
                                         </div>
-                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
-                                        <button class="btn btn-sm btn-primary" type="button" id="export"><i class="fa fa-download"></i><span>导出</span></button>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">

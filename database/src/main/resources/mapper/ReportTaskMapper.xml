@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper
+				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- 不使用namespace的话sql搜索定位会比较方便 -->
+<mapper namespace="ReportTask">
+
+	<resultMap id="RM_ReportTask" type="com.es.ssp.model.ReportTask">
+        <result property="taskId" column="taskId"/>
+        <result property="realName" column="realName"/>
+        <result property="mobile" column="mobile"/>
+        <result property="workUnit" column="workUnit"/>
+        <result property="town" column="town"/>
+        <result property="community" column="community"/>
+        <result property="taskNum" column="taskNum"/>
+        <result property="createTime" column="createTime"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="ReportTask.columns">
+	    <![CDATA[
+		taskId,realName,mobile,workUnit,town,community,taskNum,createTime
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="ReportTask.insert" useGeneratedKeys="true" keyProperty="taskId">
+    <![CDATA[
+        INSERT INTO report_task (
+         taskId, realName, mobile, workUnit, town, community, taskNum, createTime
+        ) VALUES (
+         #{taskId}, #{realName}, #{mobile}, #{workUnit}, #{town}, #{community}, #{taskNum}, #{createTime}        
+        )
+    ]]>
+		<!--	
+			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+			DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+		-->
+	</insert>
+    
+	<update id="ReportTask.update" >
+    <![CDATA[
+        UPDATE report_task SET
+	        realName = #{realName} , mobile = #{mobile} , workUnit = #{workUnit} , town = #{town} , community = #{community} , taskNum = #{taskNum} , createTime = #{createTime}  
+        WHERE 
+        	taskId = #{taskId}  	        
+    ]]>
+	</update>
+
+    <delete id="ReportTask.delete">
+    <![CDATA[
+        DELETE FROM report_task WHERE
+        taskId = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="ReportTask.getById" resultMap="RM_ReportTask">
+		SELECT <include refid="ReportTask.columns" />
+	    <![CDATA[
+		    FROM report_task 
+	        WHERE 
+		        taskId = #{id} 
+	    ]]>
+	</select>
+	
+	<sql id="ReportTask.findPage.where">
+		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+		<where>	      				
+	       <if test="@Ognl@isNotEmpty(taskId)">
+				AND taskId = #{taskId}
+			</if>
+	       <if test="@Ognl@isNotEmpty(realName)">
+				AND realName LIKE CONCAT('%',#{realName},'%')
+			</if>
+	       <if test="@Ognl@isNotEmpty(mobile)">
+				AND mobile LIKE CONCAT('%',#{mobile},'%')
+			</if>
+	       <if test="@Ognl@isNotEmpty(workUnit)">
+				AND workUnit LIKE CONCAT('%',#{workUnit},'%')
+			</if>
+	       <if test="@Ognl@isNotEmpty(town)">
+				AND town = #{town}
+			</if>
+	       <if test="@Ognl@isNotEmpty(community)">
+				AND community = #{community}
+			</if>
+	       <if test="@Ognl@isNotEmpty(taskNum)">
+				AND taskNum = #{taskNum}
+			</if>
+	       <if test="@Ognl@isNotEmpty(createTime)">
+				AND createTime = #{createTime}
+			</if>
+		</where>
+	</sql>
+		
+    <select id="ReportTask.findPage.count" resultType="long">
+        SELECT count(*) FROM report_task 
+		<include refid="ReportTask.findPage.where"/>    
+    </select>
+    
+    <!--
+    	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
+    	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
+    -->
+    <select id="ReportTask.findPage" resultMap="RM_ReportTask">
+    	SELECT <include refid="ReportTask.columns" />
+	    FROM report_task 
+		<include refid="ReportTask.findPage.where"/>
+		
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		LIMIT #{offset},#{limit}
+    </select>
+
+
+
+    <select id="ReportTask.findAll" resultMap="RM_ReportTask">
+	    SELECT <include refid="ReportTask.columns" />
+		FROM report_task
+		<include refid="ReportTask.findPage.where"/>
+		<if test="@Ognl@isNotEmpty(sortColumns)">
+			ORDER BY ${sortColumns}
+		</if>
+		<if test="@Ognl@isNotEmpty(limit)">
+			LIMIT #{limit}
+		</if>
+	</select>
+</mapper>
+

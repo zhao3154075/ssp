@@ -4,9 +4,11 @@ import cn.org.rapid_framework.page.Page;
 import com.es.ssp.model.Report;
 import com.es.ssp.query.ReportQuery;
 import common.base.BaseMybatisDao;
+import common.util.DateUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 import static common.util.MybatisPageQueryUtils.pageQuery;
 
@@ -41,4 +43,15 @@ public class ReportDao extends BaseMybatisDao<Report,Long>{
 		return list;
 	}
 
+
+	/**
+	 * 统计通过初审的数量
+	 * @param realName
+	 * @param mobile
+	 * @param year
+	 * @return
+	 */
+	public List<Map> taskReportCount(String realName,String mobile,Integer year){
+		return selectList("Report.taskReportCount","realName,mobile,createYear",realName,mobile,year);
+	}
 }

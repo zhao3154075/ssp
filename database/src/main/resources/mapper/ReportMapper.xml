@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-		<!DOCTYPE mapper
-				PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
-				"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+        PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
 <!-- 不使用namespace的话sql搜索定位会比较方便 -->
 <mapper namespace="Report">
 
-	<resultMap id="RM_Report" type="com.es.ssp.model.Report">
+    <resultMap id="RM_Report" type="com.es.ssp.model.Report">
         <result property="reportId" column="reportId"/>
         <result property="fansId" column="fansId"/>
         <result property="createTime" column="createTime"/>
@@ -24,304 +24,349 @@
         <result property="prizeStatus2" column="prizeStatus2"/>
         <result property="remark" column="remark"/>
         <result property="reply" column="reply"/>
-		<result property="isHide" column="isHide"/>
-	<association property="operateRecords" column="reportId" fetchType="lazy"
-				 select="OperateRecord.findByReportId" />
-	<association property="prizeRecords" column="reportId" fetchType="lazy"
-				 select="PrizeRecord.findByReportId" />
-	<association property="reportType" column="reportType2" fetchType="lazy"
-			 select="ReportType.getById" />
-	<association property="fans" column="fansId" fetchType="lazy"
-			 select="Fans.getById" />
-	</resultMap>
-	
-	<!-- 用于select查询公用抽取的列 -->
-	<sql id="Report.columns">
+        <result property="isHide" column="isHide"/>
+        <association property="operateRecords" column="reportId" fetchType="lazy"
+                     select="OperateRecord.findByReportId"/>
+        <association property="prizeRecords" column="reportId" fetchType="lazy"
+                     select="PrizeRecord.findByReportId"/>
+        <association property="reportType" column="reportType2" fetchType="lazy"
+                     select="ReportType.getById"/>
+        <association property="fans" column="fansId" fetchType="lazy"
+                     select="Fans.getById"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="Report.columns">
 	    <![CDATA[
+
 		reportId,fansId,createTime,happenTime,happenPlace,eventDesc,descVoice,descImages,descVideo,status,reportType1,reportType2,prizeStatus1,prizeStatus2,remark,reply,isHide
-	    ]]>
+
+        ]]>
 	</sql>
 
-	<sql id="Report.columns2">
+    <sql id="Report.columns2">
 		<![CDATA[
+
 		t.reportId,t.fansId,t.createTime,t.happenTime,t.happenPlace,t.eventDesc,t.descVoice,t.descImages,t.descVideo,t.status,t.reportType1,t.reportType2,t.prizeStatus1,t.prizeStatus2,t.remark,t.reply,t.isHide
-	    ]]>
+
+        ]]>
 	</sql>
 
-	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
-	<insert id="Report.insert" useGeneratedKeys="true" keyProperty="reportId">
-    <![CDATA[
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="Report.insert" useGeneratedKeys="true" keyProperty="reportId">
+        <![CDATA[
         INSERT INTO report (
          reportId, fansId, createTime, happenTime, happenPlace, eventDesc, descVoice, descImages, descVideo, status, reportType1, reportType2, prizeStatus1, prizeStatus2, remark, reply,isHide
         ) VALUES (
          #{reportId}, #{fansId}, #{createTime}, #{happenTime}, #{happenPlace}, #{eventDesc}, #{descVoice}, #{descImages}, #{descVideo}, #{status}, #{reportType1}, #{reportType2}, #{prizeStatus1}, #{prizeStatus2}, #{remark}, #{reply} ,#{isHide}
         )
     ]]>
-		<!--	
-			oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
-			DB2: order="BEFORE"" values nextval for sequenceName
-		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
-			SELECT sequenceName.nextval AS ID FROM DUAL 
+        <!--
+            oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL
+            DB2: order="BEFORE"" values nextval for sequenceName
+        <selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+            SELECT sequenceName.nextval AS ID FROM DUAL
         </selectKey>
-		-->
-	</insert>
-    
-	<update id="Report.update" >
+        -->
+    </insert>
+
+    <update id="Report.update">
     <![CDATA[
+
         UPDATE report SET
 	        fansId = #{fansId} , createTime = #{createTime} , happenTime = #{happenTime} , happenPlace = #{happenPlace} , eventDesc = #{eventDesc} , descVoice = #{descVoice} , descImages = #{descImages} , descVideo = #{descVideo} , status = #{status} , reportType1 = #{reportType1} , reportType2 = #{reportType2} , prizeStatus1 = #{prizeStatus1} , prizeStatus2 = #{prizeStatus2} , remark = #{remark} , reply = #{reply} ,isHide=#{isHide}
         WHERE 
         	reportId = #{reportId}  	        
-    ]]>
+
+        ]]>
 	</update>
 
     <delete id="Report.delete">
     <![CDATA[
+
         DELETE FROM report WHERE
         reportId = #{id} 
-    ]]>
+
+        ]]>
     </delete>
-    
+
     <select id="Report.getById" resultMap="RM_Report">
-		SELECT <include refid="Report.columns" />
-	    <![CDATA[
+        SELECT
+        <include refid="Report.columns"/>
+        <![CDATA[
 		    FROM report 
 	        WHERE 
 		        reportId = #{id} 
 	    ]]>
-	</select>
-	
-	<sql id="Report.findPage.where">
-		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
-		<where>	      				
-	       <if test="@Ognl@isNotEmpty(reportId)">
-				AND reportId = #{reportId}
-			</if>
-	       <if test="@Ognl@isNotEmpty(fansId)">
-				AND fansId = #{fansId}
-			</if>
-	       <if test="@Ognl@isNotEmpty(createTime)">
-				AND createTime = #{createTime}
-			</if>
-	       <if test="@Ognl@isNotEmpty(happenTime)">
-				AND happenTime = #{happenTime}
-			</if>
-	       <if test="@Ognl@isNotEmpty(happenPlace)">
-				AND happenPlace = #{happenPlace}
-			</if>
-	       <if test="@Ognl@isNotEmpty(eventDesc)">
-				AND eventDesc = #{eventDesc}
-			</if>
-	       <if test="@Ognl@isNotEmpty(descVoice)">
-				AND descVoice = #{descVoice}
-			</if>
-	       <if test="@Ognl@isNotEmpty(descImages)">
-				AND descImages = #{descImages}
-			</if>
-	       <if test="@Ognl@isNotEmpty(descVideo)">
-				AND descVideo = #{descVideo}
-			</if>
-	       <if test="@Ognl@isNotEmpty(status)">
-				AND status = #{status}
-			</if>
-	       <if test="@Ognl@isNotEmpty(reportType1)">
-				AND reportType1 = #{reportType1}
-			</if>
-	       <if test="@Ognl@isNotEmpty(reportType2)">
-				AND reportType2 = #{reportType2}
-			</if>
-	       <if test="@Ognl@isNotEmpty(prizeStatus1)">
-				AND prizeStatus1 = #{prizeStatus1}
-			</if>
-	       <if test="@Ognl@isNotEmpty(prizeStatus2)">
-				AND prizeStatus2 = #{prizeStatus2}
-			</if>
-	       <if test="@Ognl@isNotEmpty(remark)">
-				AND remark = #{remark}
-			</if>
-	       <if test="@Ognl@isNotEmpty(reply)">
-				AND reply = #{reply}
-			</if>
-			<if test="@Ognl@isNotEmpty(isHide)">
-				AND isHide = #{isHide}
-			</if>
-			<if test="@Ognl@isNotEmpty(startTime)">
-				AND createTime >= #{startTime}
-			</if>
-			<if test="@Ognl@isNotEmpty(endTime)">
-				AND #{endTime} >= createTime
-			</if>
-		</where>
-	</sql>
-
-	<sql id="Report.findPage2.where">
-		<!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
-		<where>
-			AND t.fansId = t2.fansId
-
-			<if test="@Ognl@isNotEmpty(reportId)">
-				AND t.reportId = #{reportId}
-			</if>
-			<if test="@Ognl@isNotEmpty(fansId)">
-				AND t.fansId = #{fansId}
-			</if>
-			<if test="@Ognl@isNotEmpty(createTime)">
-				AND t.createTime = #{createTime}
-			</if>
-			<if test="@Ognl@isNotEmpty(happenTime)">
-				AND t.happenTime = #{happenTime}
-			</if>
-			<if test="@Ognl@isNotEmpty(isHide)">
-				AND t.isHide = #{isHide}
-			</if>
-			<if test="@Ognl@isNotEmpty(happenPlace)">
-				AND t.happenPlace LIKE CONCAT('%',#{happenPlace},'%')
-			</if>
-			<if test="@Ognl@isNotEmpty(eventDesc)">
-				AND t.eventDesc  LIKE CONCAT('%',#{eventDesc},'%')
-			</if>
-			<if test="@Ognl@isNotEmpty(descVoice)">
-				AND t.descVoice = #{descVoice}
-			</if>
-			<if test="@Ognl@isNotEmpty(descImages)">
-				AND t.descImages = #{descImages}
-			</if>
-			<if test="@Ognl@isNotEmpty(descVideo)">
-				AND t.descVideo = #{descVideo}
-			</if>
-			<if test="@Ognl@isNotEmpty(status)">
-				AND t.status = #{status}
-			</if>
-			<if test="@Ognl@isNotEmpty(reportType1)">
-				AND t.reportType1 = #{reportType1}
-			</if>
-			<if test="@Ognl@isNotEmpty(reportType2)">
-				AND t.reportType2 = #{reportType2}
-			</if>
-			<if test="@Ognl@isNotEmpty(prizeStatus1)">
-				AND t.prizeStatus1 = #{prizeStatus1}
-			</if>
-			<if test="@Ognl@isNotEmpty(prizeStatus2)">
-				AND t.prizeStatus2 = #{prizeStatus2}
-			</if>
-			<if test="@Ognl@isNotEmpty(remark)">
-				AND t.remark = #{remark}
-			</if>
-			<if test="@Ognl@isNotEmpty(reply)">
-				AND t.reply = #{reply}
-			</if>
-			<if test="@Ognl@isNotEmpty(openId)">
-				AND t2.openId = #{openId}
-			</if>
-			<if test="@Ognl@isNotEmpty(nickName)">
-				AND t2.nickName LIKE CONCAT('%',#{nickName},'%')
-			</if>
-			<if test="@Ognl@isNotEmpty(realName)">
-				AND t2.realName LIKE CONCAT('%',#{realName},'%')
-			</if>
-			<if test="@Ognl@isNotEmpty(mobile)">
-				AND t2.mobile = #{mobile}
-			</if>
-			<if test="@Ognl@isNotEmpty(byTime) and byTime ==true">
-				<if test="@Ognl@isNotEmpty(startTime)">
-					AND t.createTime >= #{startTime}
-				</if>
-				<if test="@Ognl@isNotEmpty(endTime)">
-					AND #{endTime} >= t.createTime
-				</if>
-			</if>
-			<if test="@Ognl@isNotEmpty(roleType) and roleType==1">
-                AND t.status != 0 AND t.status != 1 AND t.status !=2
-            </if>
-			<if test="@Ognl@isNotEmpty(roleType) and roleType==0">
-				AND (t.status = 0 or t.status = 1 or t.status =3 or t.status = 8)
-			</if>
-			<if test="@Ognl@isNotEmpty(roleType) and roleType==3">
-				AND (t.status = 2 or t.status = 4 or t.status =7)
-			</if>
-		</where>
-	</sql>
-		
-    <select id="Report.findPage.count" resultType="long">
-        SELECT count(*) FROM report 
-		<include refid="Report.findPage.where"/>    
     </select>
 
-	<select id="Report.findPage2.count" resultType="long">
-		SELECT count(*) FROM report t,fans t2
-		<include refid="Report.findPage2.where"/>
-	</select>
-    
+    <sql id="Report.findPage.where">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="@Ognl@isNotEmpty(reportId)">
+                AND reportId = #{reportId}
+            </if>
+            <if test="@Ognl@isNotEmpty(fansId)">
+                AND fansId = #{fansId}
+            </if>
+            <if test="@Ognl@isNotEmpty(createTime)">
+                AND createTime = #{createTime}
+            </if>
+            <if test="@Ognl@isNotEmpty(happenTime)">
+                AND happenTime = #{happenTime}
+            </if>
+            <if test="@Ognl@isNotEmpty(happenPlace)">
+                AND happenPlace = #{happenPlace}
+            </if>
+            <if test="@Ognl@isNotEmpty(eventDesc)">
+                AND eventDesc = #{eventDesc}
+            </if>
+            <if test="@Ognl@isNotEmpty(descVoice)">
+                AND descVoice = #{descVoice}
+            </if>
+            <if test="@Ognl@isNotEmpty(descImages)">
+                AND descImages = #{descImages}
+            </if>
+            <if test="@Ognl@isNotEmpty(descVideo)">
+                AND descVideo = #{descVideo}
+            </if>
+            <if test="@Ognl@isNotEmpty(status)">
+                AND status = #{status}
+            </if>
+            <if test="@Ognl@isNotEmpty(reportType1)">
+                AND reportType1 = #{reportType1}
+            </if>
+            <if test="@Ognl@isNotEmpty(reportType2)">
+                AND reportType2 = #{reportType2}
+            </if>
+            <if test="@Ognl@isNotEmpty(prizeStatus1)">
+                AND prizeStatus1 = #{prizeStatus1}
+            </if>
+            <if test="@Ognl@isNotEmpty(prizeStatus2)">
+                AND prizeStatus2 = #{prizeStatus2}
+            </if>
+            <if test="@Ognl@isNotEmpty(remark)">
+                AND remark = #{remark}
+            </if>
+            <if test="@Ognl@isNotEmpty(reply)">
+                AND reply = #{reply}
+            </if>
+            <if test="@Ognl@isNotEmpty(isHide)">
+                AND isHide = #{isHide}
+            </if>
+            <if test="@Ognl@isNotEmpty(startTime)">
+                AND createTime >= #{startTime}
+            </if>
+            <if test="@Ognl@isNotEmpty(endTime)">
+                AND #{endTime} >= createTime
+            </if>
+        </where>
+    </sql>
+
+    <sql id="Report.findPage2.where">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            AND t.fansId = t2.fansId
+
+            <if test="@Ognl@isNotEmpty(reportId)">
+                AND t.reportId = #{reportId}
+            </if>
+            <if test="@Ognl@isNotEmpty(fansId)">
+                AND t.fansId = #{fansId}
+            </if>
+            <if test="@Ognl@isNotEmpty(createTime)">
+                AND t.createTime = #{createTime}
+            </if>
+            <if test="@Ognl@isNotEmpty(happenTime)">
+                AND t.happenTime = #{happenTime}
+            </if>
+            <if test="@Ognl@isNotEmpty(isHide)">
+                AND t.isHide = #{isHide}
+            </if>
+            <if test="@Ognl@isNotEmpty(happenPlace)">
+                AND t.happenPlace LIKE CONCAT('%',#{happenPlace},'%')
+            </if>
+            <if test="@Ognl@isNotEmpty(eventDesc)">
+                AND t.eventDesc LIKE CONCAT('%',#{eventDesc},'%')
+            </if>
+            <if test="@Ognl@isNotEmpty(descVoice)">
+                AND t.descVoice = #{descVoice}
+            </if>
+            <if test="@Ognl@isNotEmpty(descImages)">
+                AND t.descImages = #{descImages}
+            </if>
+            <if test="@Ognl@isNotEmpty(descVideo)">
+                AND t.descVideo = #{descVideo}
+            </if>
+            <if test="@Ognl@isNotEmpty(status)">
+                AND t.status = #{status}
+            </if>
+            <if test="@Ognl@isNotEmpty(reportType1)">
+                AND t.reportType1 = #{reportType1}
+            </if>
+            <if test="@Ognl@isNotEmpty(reportType2)">
+                AND t.reportType2 = #{reportType2}
+            </if>
+            <if test="@Ognl@isNotEmpty(prizeStatus1)">
+                AND t.prizeStatus1 = #{prizeStatus1}
+            </if>
+            <if test="@Ognl@isNotEmpty(prizeStatus2)">
+                AND t.prizeStatus2 = #{prizeStatus2}
+            </if>
+            <if test="@Ognl@isNotEmpty(remark)">
+                AND t.remark = #{remark}
+            </if>
+            <if test="@Ognl@isNotEmpty(reply)">
+                AND t.reply = #{reply}
+            </if>
+            <if test="@Ognl@isNotEmpty(openId)">
+                AND t2.openId = #{openId}
+            </if>
+            <if test="@Ognl@isNotEmpty(nickName)">
+                AND t2.nickName LIKE CONCAT('%',#{nickName},'%')
+            </if>
+            <if test="@Ognl@isNotEmpty(realName)">
+                AND t2.realName LIKE CONCAT('%',#{realName},'%')
+            </if>
+            <if test="@Ognl@isNotEmpty(mobile)">
+                AND t2.mobile = #{mobile}
+            </if>
+            <if test="@Ognl@isNotEmpty(byTime) and byTime ==true">
+                <if test="@Ognl@isNotEmpty(startTime)">
+                    AND t.createTime >= #{startTime}
+                </if>
+                <if test="@Ognl@isNotEmpty(endTime)">
+                    AND #{endTime} >= t.createTime
+                </if>
+            </if>
+            <if test="@Ognl@isNotEmpty(roleType) and roleType==1">
+                AND t.status != 0 AND t.status != 1 AND t.status !=2
+            </if>
+            <if test="@Ognl@isNotEmpty(roleType) and roleType==0">
+                AND (t.status = 0 or t.status = 1 or t.status =3 or t.status = 8)
+            </if>
+            <if test="@Ognl@isNotEmpty(roleType) and roleType==3">
+                AND (t.status = 2 or t.status = 4 or t.status =7)
+            </if>
+        </where>
+    </sql>
+
+    <select id="Report.findPage.count" resultType="long">
+        SELECT count(*) FROM report
+        <include refid="Report.findPage.where"/>
+    </select>
+
+    <select id="Report.findPage2.count" resultType="long">
+        SELECT count(*) FROM report t,fans t2
+        <include refid="Report.findPage2.where"/>
+    </select>
+
     <!--
     	分页查询已经使用Dialect进行分页,也可以不使用Dialect直接编写分页
     	因为分页查询将传 offset,pageSize,lastRows 三个参数,不同的数据库可以根于此三个参数属性应用不同的分页实现
     -->
     <select id="Report.findPage" resultMap="RM_Report">
-    	SELECT <include refid="Report.columns" />
-	    FROM report 
-		<include refid="Report.findPage.where"/>
-		
-		<if test="@Ognl@isNotEmpty(sortColumns)">
-			ORDER BY ${sortColumns}
-		</if>
-		LIMIT #{offset},#{limit}
+        SELECT
+        <include refid="Report.columns"/>
+        FROM report
+        <include refid="Report.findPage.where"/>
+
+        <if test="@Ognl@isNotEmpty(sortColumns)">
+            ORDER BY ${sortColumns}
+        </if>
+        LIMIT #{offset},#{limit}
     </select>
 
-	<select id="Report.findPage2" resultMap="RM_Report">
-		SELECT <include refid="Report.columns2"/>
-		FROM report t,fans t2
-		<include refid="Report.findPage2.where"/>
-		<if test="@Ognl@isNotEmpty(sortColumns)">
-			ORDER BY ${sortColumns}
-		</if>
-		LIMIT #{offset},#{limit}
-	</select>
+    <select id="Report.findPage2" resultMap="RM_Report">
+        SELECT
+        <include refid="Report.columns2"/>
+        FROM report t,fans t2
+        <include refid="Report.findPage2.where"/>
+        <if test="@Ognl@isNotEmpty(sortColumns)">
+            ORDER BY ${sortColumns}
+        </if>
+        LIMIT #{offset},#{limit}
+    </select>
 
 
     <select id="Report.findByReportType2" resultMap="RM_Report">
-        SELECT <include refid="Report.columns" />
+        SELECT
+        <include refid="Report.columns"/>
         FROM report
         WHERE reportType2=#{id}
     </select>
 
     <select id="Report.findByFansId" resultMap="RM_Report">
-        SELECT <include refid="Report.columns" />
+        SELECT
+        <include refid="Report.columns"/>
         FROM report
         WHERE fansId=#{id}
     </select>
 
     <select id="Report.findAll" resultMap="RM_Report">
-	    SELECT <include refid="Report.columns" />
-		FROM report
-		<include refid="Report.findPage.where"/>
-		<if test="@Ognl@isNotEmpty(sortColumns)">
-			ORDER BY ${sortColumns}
-		</if>
-		<if test="@Ognl@isNotEmpty(limit)">
-			LIMIT #{limit}
-		</if>
-	</select>
+        SELECT
+        <include refid="Report.columns"/>
+        FROM report
+        <include refid="Report.findPage.where"/>
+        <if test="@Ognl@isNotEmpty(sortColumns)">
+            ORDER BY ${sortColumns}
+        </if>
+        <if test="@Ognl@isNotEmpty(limit)">
+            LIMIT #{limit}
+        </if>
+    </select>
 
-	<select id="Report.findByExport" resultMap="RM_Report">
-		SELECT <include refid="Report.columns2"/>
-		FROM report t,fans t2
-		<include refid="Report.findPage2.where"/>
-		<if test="@Ognl@isNotEmpty(sortColumns)">
-			ORDER BY ${sortColumns}
-		</if>
-	</select>
+    <select id="Report.findByExport" resultMap="RM_Report">
+        SELECT
+        <include refid="Report.columns2"/>
+        FROM report t,fans t2
+        <include refid="Report.findPage2.where"/>
+        <if test="@Ognl@isNotEmpty(sortColumns)">
+            ORDER BY ${sortColumns}
+        </if>
+    </select>
 
-	<select id="Report.totalStatusCount" resultType="Map">
-		SELECT status,count(*) as total FROM report
+    <select id="Report.totalStatusCount" resultType="Map">
+        SELECT status,count(*) as total FROM report
+        WHERE
+        fansId=#{fansId}
+        <if test="@Ognl@isNotEmpty(startTime)">
+            AND createTime >= #{startTime}
+        </if>
+        <if test="@Ognl@isNotEmpty(endTime)">
+            AND #{endTime} >= createTime
+        </if>
+        GROUP BY status
+    </select>
+
+    <select id="Report.taskReportCount" resultType="Map">
+		SELECT
+	COUNT(*) AS monthTotal,
+	createMonth
+    FROM
+	(
+		SELECT
+			FROM_UNIXTIME(createTime, '%Y') AS createYear,
+			FROM_UNIXTIME(createTime, '%c') AS createMonth
+		FROM
+			report
 		WHERE
-		fansId=#{fansId}
-		<if test="@Ognl@isNotEmpty(startTime)">
-			AND createTime >= #{startTime}
-		</if>
-		<if test="@Ognl@isNotEmpty(endTime)">
-			AND #{endTime} >= createTime
-		</if>
-		GROUP BY status
+			`status` != 0
+		AND `status` != 2
+		AND fansId = (
+			SELECT
+				fansId
+			FROM
+				fans
+			WHERE
+				realName = #{realName}
+			AND mobile = #{mobile}
+		)
+	) t
+    WHERE
+	createYear = #{createYear}
+         GROUP BY
+	       createMonth
 	</select>
 
 </mapper>

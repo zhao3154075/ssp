@@ -45,16 +45,12 @@
                                 <form action="" name="queryForm" id="queryForm">
                                     <input type="hidden" name="roleType" th:value="${query.roleType}"/>
                                 <div class="row">
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-12">
                                         <input type="text" name="realName" th:value="${query.realName}" placeholder="请填写姓名" class="input-sm form-control">
-                                    </div>
-                                    <div class="col-sm-2">
                                         <input type="text" name="mobile" th:value="${query.mobile}" placeholder="请填写联系方式" class="input-sm form-control">
-                                    </div>
-                                    <div class="col-sm-2">
                                         <input type="text" name="userName" th:value="${query.userName}" placeholder="请填写用户名" class="input-sm form-control">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
                                     </div>
-                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i><span>搜索</span></button>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
