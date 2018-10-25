@@ -91,7 +91,7 @@ public class ReportTaskController extends BaseController{
 	
 	/** 列表 */
 	@RequestMapping
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	public String index(ModelMap model,ReportTaskQuery query,HttpServletRequest request) {
 		setDefaultSortColumns(query,DEFAULT_SORT_COLUMNS);
 		Page page = this.reportTaskManager.findPage(query);
@@ -100,7 +100,7 @@ public class ReportTaskController extends BaseController{
 	}
 	
 	/** 显示 */
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	@RequestMapping(value="/{id}")
 	public String show(ModelMap model,@PathVariable Integer id) {
 		ReportTask reportTask = (ReportTask)reportTaskManager.getById(id);
@@ -109,7 +109,7 @@ public class ReportTaskController extends BaseController{
 	}
 
 	/** 进入新增 */
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	@RequestMapping(value="/new")
 	public String _new(ModelMap model,ReportTask reportTask) {
 		model.addAttribute("reportTask",reportTask);
@@ -117,7 +117,7 @@ public class ReportTaskController extends BaseController{
 	}
 	
 	/** 保存新增,@Valid标注spirng在绑定对象时自动为我们验证对象属性并存放errors在BindingResult  */
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	@RequestMapping(method=RequestMethod.POST)
 	public String create(ModelMap model,ReportTask reportTask){
 		reportTask.setCreateTime(System.currentTimeMillis()/1000);
@@ -127,7 +127,7 @@ public class ReportTaskController extends BaseController{
 	}
 	
 	/** 编辑 */
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	@RequestMapping(value="/{id}/edit")
 	public String edit(ModelMap model,@PathVariable Integer id) {
 		ReportTask reportTask = reportTaskManager.getById(id);
@@ -137,7 +137,7 @@ public class ReportTaskController extends BaseController{
 	
 	/** 保存更新,@Valid标注spirng在绑定对象时自动为我们验证对象属性并存放errors在BindingResult  */
 	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	public String update(ReportTask reportTask){
 		reportTaskManager.update(reportTask);
 		reportTaskManager.statistics(0,reportTask.getTaskId().longValue(),getParam("lastTown"));
@@ -146,7 +146,7 @@ public class ReportTaskController extends BaseController{
 	
 	/** 删除 */
 	@RequestMapping(value="/{id}/delete",method=RequestMethod.GET)
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	public String delete(ModelMap model,@PathVariable Integer id) {
 		reportTaskManager.statistics(1,id.longValue());
 		return LIST_ACTION+"?d="+id.longValue();

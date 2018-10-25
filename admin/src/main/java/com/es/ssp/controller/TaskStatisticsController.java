@@ -84,6 +84,7 @@ public class TaskStatisticsController extends BaseController{
 	
 	/** 列表 */
 	@RequestMapping
+    @RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	public String index(ModelMap model,TaskStatisticsQuery query) {
 		int year= DateUtils.getNowYear();
 		if(query.getYear()==null||query.getYear()==0){
@@ -101,7 +102,7 @@ public class TaskStatisticsController extends BaseController{
 	}
 
 	@RequestMapping("/export")
-	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin","firstLevelAdmin"},logical = Logical.OR)
 	public void export(TaskStatisticsQuery query,HttpServletResponse response){
 		try {
 			taskStatisticsManager.export(query, getOutputStream(response, "志愿者个人数据统计"+System.currentTimeMillis()/1000+".xls"));

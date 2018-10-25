@@ -200,9 +200,9 @@
                                                                 <a th:href="|report/${item.reportId}/firstCheckNoPass|" class="btn-white btn btn-xs">初审不通过</a>
                                                             </th:block>
                                                             <th:block th:case ="1">
-                                                                <a shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/cancelFirstCheckPass')|" class="btn-white btn btn-xs">撤回</a>
                                                                 <a shiro:hasAnyRoles="admin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/reviewPass')|" class="btn-white btn btn-xs">复审通过</a>
                                                                 <a shiro:hasAnyRoles="admin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/reviewNoPass')|" class="btn-white btn btn-xs">复审不通过</a>
+                                                                <a shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/cancelFirstCheckPass')|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <th:block th:case ="2" shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin">
                                                                 <a th:href="|report/${item.reportId}/cancelFirstCheckNoPass|" class="btn-white btn btn-xs">撤回</a>
