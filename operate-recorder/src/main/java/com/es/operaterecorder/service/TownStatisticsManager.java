@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ public class TownStatisticsManager {
     }
 
     public void statistics(String town,Integer year){
+    	if(StringUtils.isEmpty(town)){return;}
 		TownStatistics townStatistics=getByTown(town,year);
 		boolean isNew=false;
 		if(townStatistics==null){
@@ -65,14 +67,18 @@ public class TownStatisticsManager {
 					townStatistics.setMonth(i,Integer.parseInt(month.toString()));
 				}
 			}
+            townStatistics.setTotalVolunteer(Integer.parseInt(townCount.get("totalVolunteer").toString()));
+            if(townStatistics.getTotalVolunteer()==0){
+                townStatisticsDao.deleteById(townStatistics.getRecordId());
+                return;
+            }
 			townStatistics.setTotalNum(Integer.parseInt(townCount.get("totalNum").toString()));
-			townStatistics.setTotalVolunteer(Integer.parseInt(townCount.get("totalVolunteer").toString()));
 			townStatistics.setTotalRate((double)townStatistics.getTotalNum()*100/(Integer.parseInt(townCount.get("taskNum").toString())*12));
 		}
 		if(isNew){
 			save(townStatistics);
 		}else{
-			update(townStatistics);
+            update(townStatistics);
 		}
 	}
 

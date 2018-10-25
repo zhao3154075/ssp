@@ -34,6 +34,9 @@ public class TaskStatisticsListener {
                 if(reportTask!=null){
                     taskStatisticsManager.statistics(reportTask,DateUtils.getNowYear());
                     townStatisticsManager.statistics(reportTask.getTown(),DateUtils.getNowYear());
+                    if(param.get("lastTown")!=null){
+                        townStatisticsManager.statistics(param.get("lastTown").toString(),DateUtils.getNowYear());
+                    }
                 }
                 break;
             }

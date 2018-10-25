@@ -38,7 +38,8 @@
     </label>
 
     <div class="col-sm-4">
-        <select class="form-control" name="town" th:defaultValue="${reportTask.town}" required>
+        <input type="hidden" name="lastTown" th:value="${reportTask.town}">
+        <select class="form-control" name="town" th:defaultValue="${reportTask.town}">
         </select>
     </div>
 </div>
@@ -48,7 +49,7 @@
     </label>
 
     <div class="col-sm-4">
-        <select class="form-control" name="community" th:defaultValue="${reportTask.community}" required>
+        <select class="form-control" name="community" th:defaultValue="${reportTask.community}">
         </select>
     </div>
 </div>

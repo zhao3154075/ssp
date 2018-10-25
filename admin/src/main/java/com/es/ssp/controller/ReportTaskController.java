@@ -140,7 +140,7 @@ public class ReportTaskController extends BaseController{
 	@RequiresRoles(value = {"admin"},logical = Logical.OR)
 	public String update(ReportTask reportTask){
 		reportTaskManager.update(reportTask);
-		reportTaskManager.statistics(0,reportTask.getTaskId().longValue());
+		reportTaskManager.statistics(0,reportTask.getTaskId().longValue(),getParam("lastTown"));
 		return LIST_ACTION;
 	}
 	

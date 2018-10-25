@@ -90,7 +90,7 @@ public class TownStatisticsController extends BaseController{
 		setDefaultSortColumns(query,DEFAULT_SORT_COLUMNS);
 		Page page = this.townStatisticsManager.findPage(query);
 		model.addAllAttributes(toModelMap(page, query));
-		return "/townstatistics/list";
+		return "townstatistics/list";
 	}
 
 	@RequestMapping("/export")

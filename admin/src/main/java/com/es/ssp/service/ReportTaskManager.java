@@ -86,10 +86,13 @@ public class ReportTaskManager {
 		return reportTaskDao.findPage(query);
 	}
 
-	public void statistics(Integer type,Long id){
+	public void statistics(Integer type,Long id,String...town){
 		Map map=new HashMap();
 		map.put("type",type);
 		map.put("value",id);
+		if(town!=null&&town.length>0){
+			map.put("lastTown",town[0]);
+		}
 		rabbitTemplate.convertAndSend("taskStatistics",map);
 	}
     
