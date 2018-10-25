@@ -94,7 +94,7 @@ public class TownStatisticsController extends BaseController{
 	}
 
 	@RequestMapping("/export")
-	@RequiresRoles(value = {"admin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
 	public void export(TownStatisticsQuery query,HttpServletResponse response){
 		try {
 			townStatisticsManager.export(query, getOutputStream(response, "志愿者镇街数据统计"+System.currentTimeMillis()/1000+".xls"));

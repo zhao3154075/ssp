@@ -101,7 +101,7 @@ public class TaskStatisticsController extends BaseController{
 	}
 
 	@RequestMapping("/export")
-	@RequiresRoles(value = {"admin"},logical = Logical.OR)
+	@RequiresRoles(value = {"admin,firstLevelAdmin"},logical = Logical.OR)
 	public void export(TaskStatisticsQuery query,HttpServletResponse response){
 		try {
 			taskStatisticsManager.export(query, getOutputStream(response, "志愿者个人数据统计"+System.currentTimeMillis()/1000+".xls"));

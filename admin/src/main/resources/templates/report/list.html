@@ -200,30 +200,30 @@
                                                                 <a th:href="|report/${item.reportId}/firstCheckNoPass|" class="btn-white btn btn-xs">初审不通过</a>
                                                             </th:block>
                                                             <th:block th:case ="1">
-                                                                <a shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/cancelFirstCheckPass')|" class="btn-white btn btn-xs">取消初审通过</a>
+                                                                <a shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/cancelFirstCheckPass')|" class="btn-white btn btn-xs">撤回</a>
                                                                 <a shiro:hasAnyRoles="admin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/reviewPass')|" class="btn-white btn btn-xs">复审通过</a>
                                                                 <a shiro:hasAnyRoles="admin,firstLevelAdmin" href="javascript:void(0);" th:onclick="|javascript:onCheck(${item.reportId},'report/'+${item.reportId}+'/reviewNoPass')|" class="btn-white btn btn-xs">复审不通过</a>
                                                             </th:block>
                                                             <th:block th:case ="2" shiro:hasAnyRoles="admin,secondLevelAdmin,firstLevelAdmin">
-                                                                <a th:href="|report/${item.reportId}/cancelFirstCheckNoPass|" class="btn-white btn btn-xs">取消初审不通过</a>
+                                                                <a th:href="|report/${item.reportId}/cancelFirstCheckNoPass|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <th:block th:case ="3" shiro:hasAnyRoles="admin,firstLevelAdmin">
                                                                 <a th:href="|report/${item.reportId}/verifyPass|" class="btn-white btn btn-xs">核实</a>
                                                                 <a th:href="|report/${item.reportId}/verifyNoPass|" class="btn-white btn btn-xs">信息不准确</a>
-                                                                <a th:href="|report/${item.reportId}/cancelReviewPass|" class="btn-white btn btn-xs">取消复审通过</a>
+                                                                <a th:href="|report/${item.reportId}/cancelReviewPass|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <th:block th:case ="4" shiro:hasAnyRoles="admin,firstLevelAdmin">
-                                                                <a th:href="|report/${item.reportId}/cancelReviewNoPass|" class="btn-white btn btn-xs">取消复审未通过</a>
+                                                                <a th:href="|report/${item.reportId}/cancelReviewNoPass|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <th:block th:case ="5" shiro:hasAnyRoles="admin,firstLevelAdmin">
                                                                 <a th:href="|report/${item.reportId}/processed|" class="btn-white btn btn-xs">已整改</a>
-                                                                <a th:href="|report/${item.reportId}/cancelVerifyPass|" class="btn-white btn btn-xs">撤回核实</a>
+                                                                <a th:href="|report/${item.reportId}/cancelVerifyPass|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <th:block th:case ="6" shiro:hasAnyRoles="admin,firstLevelAdmin">
-                                                                <a th:href="|report/${item.reportId}/cancelVerifyNoPass|" class="btn-white btn btn-xs">撤回操作</a>
+                                                                <a th:href="|report/${item.reportId}/cancelVerifyNoPass|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <th:block th:case ="7" shiro:hasAnyRoles="admin,firstLevelAdmin">
-                                                                <a th:href="|report/${item.reportId}/cancelProcessed|" class="btn-white btn btn-xs">取消已整改</a>
+                                                                <a th:href="|report/${item.reportId}/cancelProcessed|" class="btn-white btn btn-xs">撤回</a>
                                                             </th:block>
                                                             <a href="#modal-form-remark" class="remarkCla btn-white btn btn-xs" th:id="${item.reportId+'re'}" data-toggle="modal">备注</a>
                                                         </th:block>
