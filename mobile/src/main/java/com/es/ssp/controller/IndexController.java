@@ -60,11 +60,11 @@ public class IndexController extends BaseController{
             ReportStatisticsYear reportStatisticsYear=reportStatisticsYearManager.getByFansId(fans.getFansId());
             setAttribute("list",reportManager.findAllByFansId(fans.getFansId()));
             if(reportStatistics!=null){
-                setAttribute("totalAmount",reportStatistics.getTotalAmount());
+                setAttribute("thisYearAmount",reportStatistics.getTotalAmount());
             }
 
             if(reportStatisticsYear!=null){
-                setAttribute("thisYearAmount",reportStatisticsYear.getTotalAmount());
+                setAttribute("totalAmount",reportStatisticsYear.getTotalAmount());
             }
             GlobalSetting globalSetting=globalSettingManager.getGlobalSetting();
             setAttribute("dayLimit",globalSetting);

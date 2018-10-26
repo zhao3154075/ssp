@@ -65,7 +65,7 @@ public class ReportStatisticsYearManager {
 	}
 
 	public ReportStatisticsYear getByFansId(Integer fansId){
-		List<ReportStatisticsYear> list=reportStatisticsYearDao.findAllByPropertys("fansId,year",fansId, DateUtils.getNowYear());
+		List<ReportStatisticsYear> list=reportStatisticsYearDao.findAllByPropertys("fansId",fansId);
 		if(list!=null){
 			for(ReportStatisticsYear result:list){
 				return result;
