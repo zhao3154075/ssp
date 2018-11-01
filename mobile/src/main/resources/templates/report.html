@@ -381,7 +381,7 @@
                                 $("[name=vrifyCode]").val("");
                                 weui.alert("验证码错误");
                             }else{
-                                weui.alert("您提交的信息已收到，请持续关注“美丽西湖”微信公众号，并注意红包发放情况！",function(){
+                                weui.alert("您提交的信息已收到。请在1个工作日之后查看个人中心，并领取奖励。",function(){
                                     if(msg.code==0){
                                         window.location.href="receive/"+msg.msg+"/0?openId=[[${fans?.openId}]]";
                                     }else{
