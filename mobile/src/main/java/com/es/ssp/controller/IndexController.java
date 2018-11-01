@@ -61,7 +61,9 @@ public class IndexController extends BaseController{
             ReportStatisticsYear reportStatisticsYear=reportStatisticsYearManager.getByFansId(fans.getFansId());
             List<Report> reportList=reportManager.findAllByFansId(fans.getFansId());
             for(Report report:reportList){
-                report.setReply(report.getReply().replaceAll("\n", "<br/>"));
+                if(report.getReply()!=null){
+                    report.setReply(report.getReply().replaceAll("\n", "<br/>"));
+                }
             }
             setAttribute("list",reportList);
             if(reportStatistics!=null){
