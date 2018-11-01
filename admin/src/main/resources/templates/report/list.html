@@ -361,8 +361,7 @@
                     dataType:"json",
                     success:function (obj) {
                         if (obj.flag==true){
-                            $("#reply").html("");
-                            $("#reply").html(obj.reply);
+                            $("#reply").val(obj.reply);
                         }
                     }
                 });
@@ -376,8 +375,7 @@
                     dataType:"json",
                     success:function (obj) {
                         if (obj.flag==true){
-                            $("#remark").html("");
-                            $("#remark").html(obj.remark);
+                            $("#remark").val(obj.remark);
                         }
                     }
                 });
@@ -386,31 +384,38 @@
             $("#replyBtn").click(function () {
                 var id = $("#formReportId").val();
                 var replyText = $("#reply").val();
-                $.ajax({
-                    url:"report/"+id+"/reply",
-                    data:{"replyText":replyText},
-                    dataType:"json",
-                    success:function (obj) {
-                        if (obj.flag==true){
-                            alert("回复成功");
+                if(replyText!=""){
+                    $.ajax({
+                        url:"report/"+id+"/reply",
+                        data:{"replyText":replyText},
+                        dataType:"json",
+                        success:function (obj) {
+                            if (obj.flag==true){
+                                alert("回复成功");
+                                $("#reply").val("");
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
                 $("#modal-form").modal("hide","");
             });
             $("#remarkBtn").click(function () {
                 var id = $("#remarkReportId").val();
                 var remarkText = $("#remark").val();
-                $.ajax({
-                    url:"report/"+id+"/remark",
-                    data:{"remarkText":remarkText},
-                    dataType:"json",
-                    success:function (obj) {
-                        if (obj.flag==true){
-                            alert("备注成功");
+                if(remarkText!=""){
+                    $.ajax({
+                        url:"report/"+id+"/remark",
+                        data:{"remarkText":remarkText},
+                        dataType:"json",
+                        success:function (obj) {
+                            if (obj.flag==true){
+                                alert("备注成功");
+                                $("#remark").val("");
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 $("#modal-form-remark").modal("hide","");
             });
             

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 public class IndexController extends BaseController{
@@ -58,7 +59,11 @@ public class IndexController extends BaseController{
         if(fans!=null){
             ReportStatistics reportStatistics=reportStatisticsManager.getByFansId(fans.getFansId());
             ReportStatisticsYear reportStatisticsYear=reportStatisticsYearManager.getByFansId(fans.getFansId());
-            setAttribute("list",reportManager.findAllByFansId(fans.getFansId()));
+            List<Report> reportList=reportManager.findAllByFansId(fans.getFansId());
+            for(Report report:reportList){
+                report.setReply(report.getReply().replaceAll("\n", "<br/>"));
+            }
+            setAttribute("list",reportList);
             if(reportStatistics!=null){
                 setAttribute("thisYearAmount",reportStatistics.getTotalAmount());
             }

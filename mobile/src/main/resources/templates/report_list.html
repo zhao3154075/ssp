@@ -32,7 +32,7 @@
                         </div>
                         <div class="weui-form-preview__item" th:if="${not #strings.isEmpty(item.reply)}">
                             <label class="weui-form-preview__label">小编回复</label>
-                            <span class="weui-form-preview__value" th:text="${item.reply}">小编回复内容</span>
+                            <span class="weui-form-preview__value">[(${item.reply})]</span>
                         </div>
                     </div>
                     <div class="weui-form-preview__ft">
