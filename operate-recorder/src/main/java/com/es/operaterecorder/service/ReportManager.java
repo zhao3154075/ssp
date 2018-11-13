@@ -77,5 +77,18 @@ public class ReportManager {
 		long endTime=DateUtils.getEndDayOfYear(year).getTime()/1000;
 		return reportDao.selectList("Report.totalStatusCount","fansId,startTime,endTime",fansId,startTime,endTime);
 	}
-    
+
+	public int getThisYearAmount(Integer fansId,int year){
+		long startTime=DateUtils.getBeginDayOfYear(year).getTime()/1000;
+		long endTime=DateUtils.getEndDayOfYear(year).getTime()/1000;
+		Long total1=reportDao.selectOne("Report.getTotalAmount","fansId,startTime,endTime,prizeStatus1",fansId,startTime,endTime,1);
+		Long total2=reportDao.selectOne("Report.getTotalAmount","fansId,startTime,endTime,prizeStatus2",fansId,startTime,endTime,1);
+		return total1.intValue()*100+(total2.intValue()*200);
+	}
+
+	public int getTotalAmount(Integer fansId){
+		Long total1=reportDao.selectOne("Report.getTotalAmount","fansId,prizeStatus1",fansId,1);
+		Long total2=reportDao.selectOne("Report.getTotalAmount","fansId,prizeStatus2",fansId,1);
+		return total1.intValue()*100+(total2.intValue()*200);
+	}
 }

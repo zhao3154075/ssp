@@ -575,6 +575,7 @@ public class ReportController extends BaseController{
 				report.setPrizeStatus1(1);
 				reportManager.update(report);
 				object.put("flag",true);
+				reportRecordManager.reportStatistics(report.getReportId());
 			}else {
 				object.put("message","初次奖励已发放");
 				object.put("flag",false);
@@ -596,6 +597,7 @@ public class ReportController extends BaseController{
 				report.setPrizeStatus2(1);
 				reportManager.update(report);
 				object.put("flag",true);
+				reportRecordManager.reportStatistics(report.getReportId());
 			}else {
 				object.put("message","追加奖励已发放");
 				object.put("flag",false);

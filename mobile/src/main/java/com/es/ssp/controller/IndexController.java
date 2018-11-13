@@ -200,7 +200,6 @@ public class IndexController extends BaseController{
                             prizeRecord.setReportTime(report.getCreateTime());
                             prizeRecordManager.save(prizeRecord);
                             redpackManager.sendRedpack(prizeRecord.getRecordId());
-                            reportRecordManager.reportStatistics(report.getReportId());
                         }
 
                     }
@@ -233,7 +232,6 @@ public class IndexController extends BaseController{
                                 prizeRecord.setReportTime(report.getCreateTime());
                                 prizeRecordManager.save(prizeRecord);
                                 redpackManager.sendRedpack(prizeRecord.getRecordId());
-                                reportRecordManager.reportStatistics(report.getReportId());
                             }
                         }
                     }

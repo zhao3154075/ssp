@@ -369,5 +369,22 @@
 	       createMonth
 	</select>
 
+    <select id="Report.getTotalAmount" resultType="long">
+        SELECT COUNT(*)
+        FROM report
+        WHERE fansId=${fansId}
+        <if test="@Ognl@isNotEmpty(prizeStatus1)">
+            AND prizeStatus1 > 0
+        </if>
+        <if test="@Ognl@isNotEmpty(prizeStatus2)">
+            AND prizeStatus2 > 0
+        </if>
+        <if test="@Ognl@isNotEmpty(startTime)">
+            <![CDATA[
+		AND createTime > ${startTime}
+			AND createTime < ${endTime}
+			]]>
+        </if>
+    </select>
 </mapper>
 

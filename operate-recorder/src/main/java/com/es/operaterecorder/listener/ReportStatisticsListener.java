@@ -82,7 +82,7 @@ public class ReportStatisticsListener {
                 }
             }
         }
-        reportStatistics.setTotalAmount(prizeRecordManager.getThisYearAmount(fansId,year));
+        reportStatistics.setTotalAmount(reportManager.getThisYearAmount(fansId,year));
         if(method==1){
             reportStatisticsManager.save(reportStatistics);
         }else{
@@ -95,7 +95,7 @@ public class ReportStatisticsListener {
             reportStatisticsYear.setFansId(fansId);
             method=1;
         }
-        reportStatisticsYear.setTotalAmount(prizeRecordManager.getTotalAmount(fansId));
+        reportStatisticsYear.setTotalAmount(reportManager.getTotalAmount(fansId));
         if(method==1){
             reportStatisticsYearManager.save(reportStatisticsYear);
         }else{
