@@ -2,6 +2,8 @@ server:
   port: 8089
   servlet:
     context-path: /mobile
+  tomcat:
+    protocol-header: X-Forwarded-Proto
 spring:
   thymeleaf:
     cache: false

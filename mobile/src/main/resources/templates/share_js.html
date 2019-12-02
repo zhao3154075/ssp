@@ -1,4 +1,4 @@
-<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     $(function(){
         pushHistory();
@@ -21,8 +21,8 @@
     var urlPrefix="[(${urlPrefix})]";
     //微信分享的数据
     var wxData = {
-        "imgUrl" : urlPrefix+"/images/share_icon.png",
-        "link" : "http://www.xhcminform.top/mobile/index",
+        "imgUrl" : window.location.protocol+urlPrefix+"/images/share_icon.png",
+        "link" : window.location.protocol+"//www.xhcminform.top/mobile/index",
         "desc" : "快和我一起参与文明创建，赢取奖励",
         "title" : "快和我一起参与文明创建，赢取奖励"
     };
@@ -60,7 +60,7 @@
     $(function(){
         $.getJSON("jsconfig",{url:window.location.href},function(msg){
             wx.config({
-                debug: msg.debug,
+                debug: false,
                 appId: msg.appId,
                 timestamp: msg.timestamp,
                 nonceStr: msg.nonceStr,
@@ -80,7 +80,7 @@
                             var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                             var speed = res.speed; // 速度，以米/每秒计
                             var accuracy = res.accuracy; // 位置精度
-                            geocoder = new qq.maps.Geocoder({
+                           /* geocoder = new qq.maps.Geocoder({
                                 complete:function(result){
                                     located=1;
                                     if(result.detail.address.indexOf(locs)>-1){
@@ -89,7 +89,7 @@
                                 }
                             });
                             var coord=new qq.maps.LatLng(latitude,longitude);
-                            geocoder.getAddress(coord);
+                            geocoder.getAddress(coord);*/
                         }
                     });
                 }

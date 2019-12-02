@@ -68,14 +68,14 @@ public class FansInterceptor extends HandlerInterceptorAdapter {
                     }else{
                         JSONObject userInfo=SnsAuthorizeApi.getSnsAuthorizeUserInfo(q);
                         Fans fans=fansManager.getUnknownFans(userInfo.get("user_id").toString());
-                        if(fans!=null&&fans.getSubscribe()==1)
+                        if(fans!=null&&fans.getSubscribe()!=null&&fans.getSubscribe()==1)
                             request.setAttribute("fans",fans);
                     }
                 }
 
             }else{
                 Fans fans=fansManager.findByOpenId(openId);
-                if(fans!=null&&fans.getSubscribe()==1)
+                if(fans!=null&&fans.getSubscribe()!=null&&fans.getSubscribe()==1)
                 request.setAttribute("fans",fans);
             }
         }

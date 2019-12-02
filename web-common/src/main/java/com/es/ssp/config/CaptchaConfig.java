@@ -21,8 +21,10 @@ public class CaptchaConfig {
         properties.setProperty("kaptcha.session.key", "code");
         properties.setProperty("kaptcha.textproducer.char.length", "4");
         properties.setProperty("kaptcha.textproducer.font.size", "30");
+        properties.setProperty("kaptcha.textproducer.char.string", "0123456789");
+        properties.setProperty("kaptcha.noise.impl", "com.google.code.kaptcha.impl.NoNoise");
         properties.setProperty("kaptcha.obscurificator.impl", "com.google.code.kaptcha.impl.ShadowGimpy");
-        properties.setProperty("kaptcha.textproducer.font.names", "宋体,楷体,微软雅黑");
+        properties.setProperty("kaptcha.textproducer.font.names", "楷体");
         Config config=new Config(properties);
         defaultKaptcha.setConfig(config);
         return defaultKaptcha;
