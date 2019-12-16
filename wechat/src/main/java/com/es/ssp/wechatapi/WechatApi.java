@@ -1,6 +1,8 @@
 package com.es.ssp.wechatapi;
 
 import common.util.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import weixin.popular.api.MediaAPI;
@@ -30,6 +32,7 @@ import java.util.UUID;
 @Component
 public class WechatApi {
 
+    private static final Logger logger = LoggerFactory.getLogger(WechatApi.class);
     @Value("${wechat.app-id}")
     private  String appID ;//这里是AppId,我放到配置文件中了,也可以在这里写,直接定义全局变量,下面的开发者密码一样
     @Value("${wechat.app-secret}")
@@ -137,9 +140,11 @@ public class WechatApi {
                     }
                 }
             } catch (Exception e) {
+                logger.error("下载媒体失败:"+e.getMessage());
                 e.printStackTrace();
             }
         }
+        logger.error("下载媒体失败:"+result.getErrmsg());
         return null;
     }
 

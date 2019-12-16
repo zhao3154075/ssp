@@ -138,12 +138,14 @@ public class IndexController extends BaseController{
                 String images="";
                 if(imgServerIds!=null){
                     for(String imgServerId:imgServerIds){
+                        if(!images.equals("")){
+                            images+=",";
+                        }
                         String url=wechatApi.mediaGet(imgServerId);
                         if(url!=null){
-                            if(!images.equals("")){
-                                images+=",";
-                            }
                             images+=url;
+                        }else{
+                            images+=imgServerId;
                         }
                     }
                     report.setDescImages(images);
@@ -164,6 +166,34 @@ public class IndexController extends BaseController{
             }
         }
         return "";
+    }
+
+    @RequestMapping("/reloadImage/{reportId}")
+    @ResponseBody
+    public String reloadImage(@PathVariable Long reportId){
+        Report report=reportManager.getById(reportId);
+        if(report!=null){
+            String descImages=report.getDescImages();
+            String images[]=descImages.split(",");
+            if(images.length==0){
+                return "no image";
+            }
+            for(String image:images){
+                if(!image.contains(".jpg")){
+                    String url=wechatApi.mediaGet(image);
+                    if(url!=null){
+                        descImages=descImages.replace(image,url);
+                    }else{
+                        return "fail";
+                    }
+                }
+            }
+            report.setDescImages(descImages);
+            reportManager.update(report);
+        }else{
+            return "no report";
+        }
+        return "success";
     }
 
     @RequestMapping("/receive/{reportId}/{type}")

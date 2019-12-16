@@ -162,8 +162,7 @@
                                                     </td>
                                                     <td>
                                                         <th:block th:if="${!#strings.isEmpty(item.descImages)}">
-
-                                                        <a th:each="obj:${#strings.arraySplit(item.descImages,',')}" href="javascript:void(0)" data-magnify="gallery" data-group="g1" th:data-src="|${urlPrefix}/${obj}|"><img  th:src="|${urlPrefix}/${obj}|" style="height: 60px;width: 40px;"/></a>
+                                                        <a th:each="obj:${#strings.arraySplit(item.descImages,',')}" href="javascript:void(0)" data-magnify="gallery" th:attr="data-group=${'g'+item.reportId}" th:data-src="|${urlPrefix}/${obj}|"><img th:onerror="|imgError(this,${item.reportId})|" th:src="|${urlPrefix}/${obj}|" style="height: 60px;width: 40px;"/></a>
                                                         </th:block>
                                                         <th:block th:if="${!#strings.isEmpty(item.descVideo)}">
                                                             <a href="javascript:void(0);" class="btn-white btn btn-xs" th:onclick="|javascript:ajaxpreview('report/showVideo?src=${urlPrefix}/${item.descVideo}',800,500);return false;|">播放</a>
@@ -300,8 +299,20 @@
     </div>
 
     <script>
+        function imgError(obj,reportId){
+            $(obj).parent().parent().html("<a class=\"btn-white btn btn-xs reload-image\" reportid='"+reportId+"'>重载图片</a>");
+        }
         initReportType();
         $(function () {
+            $(".table").delegate(".reload-image","click",function(){
+                $(this).addClass("disabled");
+                $.get("/mobile/reloadImage/"+$(this).attr("reportid"),function (msg) {
+                    if(msg!="success"){
+                        alert("重载失败");
+                    }
+                    window.location.reload();
+                });
+            });
             $('[data-magnify]').Magnify({
                 Toolbar: [
                     'prev',
