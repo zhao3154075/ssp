@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by Administrator on 2017/6/7.
  */
 public class SnsAuthorizeApi {
-    public static final String AUTHORIZE_URL= "https://open.8531.cn/home/Authority/new?q=";
+    public static final String AUTHORIZE_URL= "https://api.tmuyun.com/home/Authority/new?q=";
     public enum Scope {
         SNSAPI_BASE("snsapi_base"),SNSAPI_USERINFO("snsapi_userinfo");
 
