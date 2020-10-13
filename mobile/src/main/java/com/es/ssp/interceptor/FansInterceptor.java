@@ -62,7 +62,6 @@ public class FansInterceptor extends HandlerInterceptorAdapter {
                     }
                     if(StringUtils.isEmpty(q)){
                         String url= SnsAuthorizeApi.createRedirectUrl(appID,appSecret,basePath+uri);
-                        System.out.println(url);
                         response.sendRedirect(url);
                         return false;
                     }else{
